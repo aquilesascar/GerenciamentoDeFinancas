@@ -5,6 +5,15 @@ public class ConsoleView {
 
     public void exibirMenu() {
         // Implementação do menu interativo no console
+        System.out.println("Bem Vindo ao Gerenciador de Financas");
+        System.out.println("\nMenu Principal");
+
+
+
+
+
+
+
     }
 
 }

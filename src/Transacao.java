@@ -8,7 +8,7 @@ public class Transacao {
     private LocalDate data;
     private Categoria categoria;
     private int qtParcelas;
-    // Adicionar depois no concustror
+    // Adicionar depois no construtor
     private boolean recorrente;
 
     public Transacao(String tipo, String descricao, double valor, LocalDate data, Categoria categoria) {

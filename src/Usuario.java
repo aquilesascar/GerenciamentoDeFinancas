@@ -6,8 +6,9 @@ public class Usuario {
     private double saldo;
     private List<Transacao> transacoes;
 
-    public Usuario(String nome) {
+    public Usuario(String nome, double saldo) {
         this.nome = nome;
+        this.saldo = saldo;
         this.transacoes = new ArrayList<Transacao>();
     }
 
