@@ -1,5 +1,4 @@
 public class Parcela {
-    public class Parcela {
         private String descricao;
         private double valor;
         private int mesRestante;

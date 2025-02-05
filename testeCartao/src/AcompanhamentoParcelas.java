@@ -1,8 +1,7 @@
-public class AcompanhamentoParcelas {
-    import java.util.ArrayList;
-    import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-    public class AcompanhamentoParcelas {
+public class AcompanhamentoParcelas {
         private List<Parcela> parcelas;
 
         public AcompanhamentoParcelas() {
@@ -19,5 +18,5 @@ public class AcompanhamentoParcelas {
                 System.out.println(p.getDescricao() + " - R$" + p.getValor() + " - Restam " + p.getMesRestante() + " meses");
             }
         }
-    }
 }
+
