@@ -7,7 +7,7 @@ public class Transacao {
     private double valor;
     private LocalDate data;
     private Categoria categoria;
-    private int qtParcelas;
+
     // Adicionar depois no construtor
     private boolean recorrente;
 
