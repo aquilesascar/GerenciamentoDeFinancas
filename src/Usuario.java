@@ -16,6 +16,7 @@ public class Usuario {
         this.transacoes.add(transacao);
     }
 
+
     // Métodos para adicionar, remover e listar transações
 
 }

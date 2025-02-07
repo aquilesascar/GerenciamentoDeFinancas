@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        FinanceiroController controller = new FinanceiroController();
+        ControleFinanceiro controller = new ControleFinanceiro();
         controller.executar();
 
     }

@@ -5,7 +5,21 @@ public class Categoria {
     private boolean eGanho; //Diz se é gato ou ganho, ganho==true, gasto==false
     //Possivelmente adicionar um arrayList de transacoes
 
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public boolean iseGanho() {
+        return eGanho;
+    }
+
     public Categoria(String nome) {
         this.nome = nome;
     }
 }
+

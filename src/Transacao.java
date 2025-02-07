@@ -8,8 +8,25 @@ public class Transacao {
     private LocalDate data;
     private Categoria categoria;
 
-    // Adicionar depois no construtor
-    private boolean recorrente;
+    public String getTipo() {
+        return tipo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
 
     public Transacao(String tipo, String descricao, double valor, LocalDate data, Categoria categoria) {
         this.tipo = tipo;
@@ -18,6 +35,7 @@ public class Transacao {
         this.data = data;
         this.categoria = categoria;
     }
+
 
 
 }
