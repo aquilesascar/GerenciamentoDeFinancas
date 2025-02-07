@@ -35,7 +35,4 @@ public class Transacao {
         this.data = data;
         this.categoria = categoria;
     }
-
-
-
 }

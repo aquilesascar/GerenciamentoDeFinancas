@@ -3,17 +3,10 @@ import java.util.Scanner;
 public class ConsoleView {
     private Scanner scanner = new Scanner(System.in);
 
-    public void exibirMenu() {
+    public static void exibirMenuPrincipal() {
         // Implementação do menu interativo no console
         System.out.println("Bem Vindo ao Gerenciador de Financas");
         System.out.println("\nMenu Principal");
-
-
-
-
-
-
-
     }
 
 }
