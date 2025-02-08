@@ -1,22 +1,29 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ConexaoSQLite {
     private static final String URL = "jdbc:sqlite:src/database/banco.sqlite"; // Caminho do arquivo
 
-    public static Connection conectar() {
-        Connection conexao = null;
-        try {
-            conexao = DriverManager.getConnection(URL);
-            System.out.println("Conectado ao SQLite!");
-        } catch (SQLException e) {
-            System.out.println("Erro ao conectar: " + e.getMessage());
-        }
-        return conexao;
-    }
-
     public static void main(String[] args) {
-        conectar(); // Teste a conexão
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+
+            String sql = "SELECT * FROM USUARIO";
+            try (PreparedStatement stmt = conexao.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                System.out.println("📌 Lista de Usuários:");
+                while (rs.next()) {
+                    // int id = rs.getInt("id");
+                    String nome = rs.getString("NOME");
+                    double saldo = rs.getDouble("SALDO");
+
+                    System.out.println("NOME: " + nome);
+                    System.out.println("SALDO: " + saldo);
+
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
     }
 }
