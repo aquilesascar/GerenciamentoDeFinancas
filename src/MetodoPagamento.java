@@ -1,6 +1,5 @@
-public class MetodoPagamento {
+public abstract class MetodoPagamento {
     private String nome;
-
 
     public MetodoPagamento(String nome){
         this.nome = nome;
@@ -10,6 +9,4 @@ public class MetodoPagamento {
     public String getNome() {
         return nome;
     }
-
-
 }
