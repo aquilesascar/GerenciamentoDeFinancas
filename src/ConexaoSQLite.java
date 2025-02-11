@@ -56,4 +56,22 @@ public class ConexaoSQLite {
             System.out.println("❌ Erro ao cadastrar: " + e.getMessage());
         }
     }
+
+    public static Usuario carregarUsuario() {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "SELECT * FROM USUARIO";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    String nome = rs.getString("NOME");
+                    double saldo = rs.getDouble("SALDO");
+                    return new Usuario(nome, saldo);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+        return null;
+    }
 }

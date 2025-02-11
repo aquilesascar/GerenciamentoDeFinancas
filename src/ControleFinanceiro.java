@@ -28,16 +28,16 @@ public class ControleFinanceiro {
 
         ConexaoSQLite.conectar();
 
-         /*
-         Adicionar uma funcao que carrega o usuario ja registrado ao inicializar o programa (seja no banco de dados, ou no arquivo),
-         Caso o usuario nao exista é dada a opcao de criar um novo usuario
-         */
+        // Banco de dados tenta carregar o usuario
+        usuario = ConexaoSQLite.carregarUsuario();
 
+        // Caso nao haja usuario existente e dado ao usuario a opcao de configurar um novo usuario
         if(usuario == null) {
             // Configuracao Inicial do Usuario (Caso nao Haja usuario Registrado)
             configInicialUsuario();
         }
 
+        System.out.println("Usuario: " + usuario.getNome());
         menuPrincipal();
     }
 
