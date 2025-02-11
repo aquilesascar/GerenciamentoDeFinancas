@@ -11,14 +11,22 @@ public class ControleFinanceiro {
 
     public ControleFinanceiro() {
         // Usuario de Teste
-        usuario = new Usuario("Seu José",5000);
-        relatorioService = new RelatorioService();
+        // usuario = new Usuario("Seu José",5000);
+
+
+        /*
+        RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
+        ERRO DE STACK OVERFLOW!
+         */
+        // relatorioService = new RelatorioService();
         categorias = new ArrayList<>();//Precisa deicidir quais categorias
     }
 
     public void executar() {
         // Implementação do fluxo principal do sistema
         Scanner scanner = new Scanner(System.in);
+
+        ConexaoSQLite.conectar();
 
          /*
          Adicionar uma funcao que carrega o usuario ja registrado ao inicializar o programa (seja no banco de dados, ou no arquivo),
@@ -49,6 +57,8 @@ public class ControleFinanceiro {
         double saldoInicial = scanner.nextDouble();
 
         usuario = new Usuario(nomeUsuario, saldoInicial);
+
+        ConexaoSQLite.adicionarUsuarioDB(usuario);
     }
 
     //Talvez essa funçao fique eum sublcasse so para trasnferencias de transação
