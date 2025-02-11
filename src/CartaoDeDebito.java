@@ -5,13 +5,13 @@ public class CartaoDeDebito extends Cartao{
 
     // Construtor para novos cartoes de debito
     public CartaoDeDebito(String nome, String bandeira, String numero) {
-        super(nome, bandeira, numero);
+        super(nome, bandeira);
     }
 
     // Construtor para cartoes de debito ja existente
 
     public CartaoDeDebito(String nome, String bandeira, String numero, List<Transacao> transacoesDebito) {
-        super(nome, bandeira, numero);
+        super(nome, bandeira);
         this.transacoesDebito = transacoesDebito;
     }
 }

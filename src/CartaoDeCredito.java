@@ -9,7 +9,7 @@ public class CartaoDeCredito extends Cartao{
 
     // Construtor para novos cartoes de credito
     public CartaoDeCredito(String nome, String bandeira, String numero, double limite, double saldoDisponivel, LocalDate dataFechamento) {
-        super(nome, bandeira, numero);
+        super(nome, bandeira);
         this.limite = limite;
         this.saldoDisponivel = saldoDisponivel;
         this.dataFechamento = dataFechamento;
@@ -17,7 +17,7 @@ public class CartaoDeCredito extends Cartao{
 
     // Construtor para cartoes de credito que ja existem
     public CartaoDeCredito(String nome, String bandeira, String numero, double limite, double saldoDisponivel, List<Transacao> fatura, LocalDate dataFechamento) {
-        super(nome, bandeira, numero);
+        super(nome, bandeira);
         this.limite = limite;
         this.saldoDisponivel = saldoDisponivel;
         this.fatura = fatura;

@@ -8,6 +8,7 @@ public class ControleFinanceiro {
     private ArrayList<Categoria> categorias;
     private RelatorioService relatorioService;
 
+
     public ControleFinanceiro() {
         // Usuario de Teste
         usuario = new Usuario("Seu José",5000);
@@ -23,6 +24,7 @@ public class ControleFinanceiro {
          Adicionar uma funcao que carrega o usuario ja registrado ao inicializar o programa (seja no banco de dados, ou no arquivo),
          Caso o usuario nao exista é dada a opcao de criar um novo usuario
          */
+
         if(usuario == null) {
             // Configuracao Inicial do Usuario (Caso nao Haja usuario Registrado)
             configInicialUsuario();
@@ -62,8 +64,6 @@ public class ControleFinanceiro {
 
             // Categoria de Teste
             Categoria categoriaStr = new Categoria(scanner.nextLine());
-
-
 
             System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
             System.out.println("[1] Receita\n[2] Despesa");
@@ -276,10 +276,11 @@ public class ControleFinanceiro {
         // validar
         String nomeCartao = scanner.nextLine();
 
-        System.out.println("Digite o numero do cartao: ");
+        //não precisa do número do cartão, melhor por segurança
+        /*System.out.println("Digite o numero do cartao: ");
         // validar
         String numeroCartao = scanner.nextLine();
-
+         */
         System.out.println("Digite a bandeira do cartao: ");
         // validar
         String bandeiraCartao = scanner.nextLine();
@@ -303,11 +304,11 @@ public class ControleFinanceiro {
             int anoAtual = LocalDate.now().getYear();
             LocalDate dataFechamento = LocalDate.of(anoAtual, mesFechamentoFatura, diaFechamentoFatura);
 
-            novoCartao = new CartaoDeCredito(nomeCartao, bandeiraCartao, numeroCartao, limiteCartao, saldoDisponivel, dataFechamento);
+            novoCartao = new CartaoDeCredito(nomeCartao, bandeiraCartao, limiteCartao, saldoDisponivel, dataFechamento);
         }
 
         else if (opcaoCartao == DEBITO) {
-            novoCartao = new CartaoDeDebito(nomeCartao, bandeiraCartao, numeroCartao);
+            novoCartao = new CartaoDeDebito(nomeCartao, bandeiraCartao);
         }
 
         usuario.adicionarCartao(novoCartao);
