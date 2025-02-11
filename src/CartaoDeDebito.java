@@ -4,7 +4,7 @@ public class CartaoDeDebito extends Cartao{
     private List<Transacao> transacoesDebito;
 
     // Construtor para novos cartoes de debito
-    public CartaoDeDebito(String nome, String bandeira, String numero) {
+    public CartaoDeDebito(String nome, String bandeira) {
         super(nome, bandeira);
     }
 
