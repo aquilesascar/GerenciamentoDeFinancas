@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,7 +12,7 @@ public class ControleFinanceiro {
 
     public ControleFinanceiro() {
         // Usuario de Teste
-         usuario = new Usuario("Seu José",5000);
+        // usuario = new Usuario("Seu José",5000);
 
         /*
         RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
@@ -29,6 +30,12 @@ public class ControleFinanceiro {
 
         // Banco de dados tenta carregar o usuario
         usuario = ConexaoSQLite.carregarUsuario();
+
+        //Cria categorias ja pre-definidas (Testes)
+        categorias.add(new Categoria("Entretenimento"));
+        categorias.add(new Categoria("Alimentacao"));
+        categorias.add(new Categoria("Despezas"));
+        categorias.add(new Categoria("Educacao"));
 
         // Caso nao haja usuario existente e dado ao usuario a opcao de configurar um novo usuario
         if(usuario == null) {
@@ -62,17 +69,10 @@ public class ControleFinanceiro {
 
     //Talvez essa funçao fique eum sublcasse so para trasnferencias de transação
     private void realizarTransacao() {
-
-
             Scanner scanner = new Scanner(System.in);
 
-            System.out.println("Escolha uma categoria de Transação ");
-            imprimirCategorias();
-
-            //Categoria categoriaStr = categorias[scanner.nextInt()];
-
-            // Categoria de Teste
-            Categoria categoriaStr = new Categoria(scanner.nextLine());
+            // Validador de categorias
+            Categoria categoriaCompra = validarCategoria();
 
             System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
             System.out.println("[1] Receita\n[2] Despesa");
@@ -100,7 +100,7 @@ public class ControleFinanceiro {
                 case 1:
                     //String tipo, String descricao, double valor, LocalDate data, Categoria categoria
                     TransacaoRecorrente transacao = new TransacaoRecorrente(tipoStr, descricaoTransacao,
-                            valorTransacao, dataTransacao, categoriaStr);
+                            valorTransacao, dataTransacao, categoriaCompra);
                     usuario.adicionarTransacao(transacao);
 
                     break;
@@ -114,7 +114,7 @@ public class ControleFinanceiro {
                             // a vista
                             //String tipo, String descricao, double valor, LocalDate data, Categoria categoria, int quantParcelas
                             transacaoVariavel = new TransacaoVariavel(tipoStr,descricaoTransacao,valorTransacao,dataTransacao,
-                                    categoriaStr,1);
+                                    categoriaCompra,1);
                             usuario.adicionarTransacao(transacaoVariavel);
                             System.out.println("Transação feita com sucesso!");
                             System.out.println(transacaoVariavel.getDescricao()+"   "+transacaoVariavel.getQuantParcelas()+
@@ -125,7 +125,7 @@ public class ControleFinanceiro {
                             System.out.println("Qual a quantidade de parcelas? ");
                             int opcaoParcelas = scanner.nextInt();
                             transacaoVariavel= new TransacaoVariavel(tipoStr,descricaoTransacao,valorTransacao,dataTransacao,
-                                    categoriaStr,opcaoParcelas);
+                                    categoriaCompra,opcaoParcelas);
                             usuario.adicionarTransacao(transacaoVariavel);
                             System.out.println("Transação adicionada com sucesso!");
                             System.out.println(transacaoVariavel.getDescricao()+"   "+transacaoVariavel.getQuantParcelas()+
@@ -139,14 +139,6 @@ public class ControleFinanceiro {
                 default:
                     System.out.println("Esta opção nao existe.");
             }
-
-
-    }
-
-    public void imprimirCategorias() {
-        for (int i = 0; i < categorias.size(); i++) {
-            System.out.println("Digite ["+i+"] para "+ categorias.get(i).getNome());
-        }
     }
 
     private void menuPrincipal() {
@@ -359,6 +351,50 @@ public class ControleFinanceiro {
     private void listarCartao() {
         for(int i = 0; i < usuario.getCartoes().size(); i++) {
             System.out.println("[" + (i+1) + "] " + usuario.getCartoes().get(i).getNome());
+        }
+    }
+
+    private Categoria validarCategoria() {
+        Scanner scanner = new Scanner(System.in);
+
+        while(true) {
+            System.out.println("Seleciona a categoria da Transacao: ");
+            System.out.println("[1] Adicionar Categoria");
+
+            if(!categorias.isEmpty()) {
+                for(int i = 0; i < categorias.size(); i++) {
+                    System.out.println("[" + (i+2) + "] " + categorias.get(i).getNome());
+                }
+            }
+
+            int opcaoCategoria = scanner.nextInt();
+            System.out.println("CATEGORIA ESCOLHIDA NUMERO: " + opcaoCategoria);
+
+            if(opcaoCategoria == 1) {
+                criarCategoria();
+            }
+            else if(opcaoCategoria > categorias.size()) {
+                System.out.println("Opcao Invalida");
+            } else {
+                return categorias.get(opcaoCategoria - 2);
+            }
+        }
+    }
+
+    private void criarCategoria() {
+        Scanner scanner = new Scanner(System.in);
+
+        while(true) {
+            System.out.println("Nome do categoria: ");
+            String nomeCategoria = scanner.nextLine();
+
+            if(nomeCategoria.isEmpty()) {
+                System.out.println("O campo de preenchimento nao pode estar vazio! Tente Novamente!");
+            } else {
+                Categoria novaCategoria = new Categoria(nomeCategoria);
+                categorias.add(novaCategoria);
+                return;
+            }
         }
     }
 
