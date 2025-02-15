@@ -22,4 +22,20 @@ public class Usuario {
     public void adicionarCartao(Cartao cartao) {
         this.cartoes.add(cartao);
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public List<Cartao> getCartoes() {
+        return cartoes;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
 }

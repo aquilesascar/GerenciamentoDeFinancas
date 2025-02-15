@@ -3,7 +3,6 @@ public abstract class MetodoPagamento {
 
     public MetodoPagamento(String nome){
         this.nome = nome;
-
     }
 
     public String getNome() {
