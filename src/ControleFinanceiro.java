@@ -1,6 +1,7 @@
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 // Classe que controla a interação entre usuário e sistema
@@ -149,6 +150,7 @@ public class ControleFinanceiro {
             System.out.println("[1] Transacoes");
             System.out.println("[2] Cartoes");
             System.out.println("[3] Relatorio");
+            System.out.println("[4] Categoria");
             System.out.println("[0] Sair");
 
             int opcaoMenuPrincipal = scanner.nextInt();
@@ -165,6 +167,9 @@ public class ControleFinanceiro {
                     // Gera o relatorio para o usuario
                     // gerarRelatorio()
                     break;
+                case 4:
+                    menuCategoria();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     return;
@@ -172,6 +177,36 @@ public class ControleFinanceiro {
                     System.out.println("Opcao Invalida");
                     break;
             }
+        }
+    }
+
+    private void menuCategoria() {
+        Scanner scanner = new Scanner(System.in);
+        while(true) {
+            System.out.println("Digite a opcao desejada: ");
+            System.out.println("[1] Adicionar Categoria");
+            System.out.println("[2] Remover Categoria");
+            System.out.println("[3] Listar Categoria");
+            System.out.println("[0] Voltar");
+
+            int opcaoMenuCategoria = scanner.nextInt();
+
+            switch (opcaoMenuCategoria) {
+                case 1:
+                    criarCategoria();
+                    break;
+                case 2:
+                    removerCategoria();
+                    break;
+                case 3:
+                    listarCategoria();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Opcao Invalida!");
+            }
+
         }
     }
 
@@ -195,6 +230,7 @@ public class ControleFinanceiro {
                     break;
                 case 2:
                     // Remove uma transacao
+                    removerTransacao();
                     break;
                 case 3:
                     // lista as transacoes do Mes Atual
@@ -231,8 +267,8 @@ public class ControleFinanceiro {
                     adicionarCartao();
                     break;
                 case 2:
-                    removerCartao();
                     // Remove um cartao
+                    removerCartao();
                     break;
                 case 3:
                     // Lista os cartoes
@@ -348,6 +384,17 @@ public class ControleFinanceiro {
         }
     }
 
+    private void listarCategoria() {
+        if (categorias.isEmpty()){
+            System.out.println("Nao ha categorias criadas");
+            return;
+        }
+
+        for(Categoria cat: categorias) {
+            System.out.println(cat.getNome());
+        }
+    }
+
     private void listarCartao() {
         for(int i = 0; i < usuario.getCartoes().size(); i++) {
             System.out.println("[" + (i+1) + "] " + usuario.getCartoes().get(i).getNome());
@@ -368,15 +415,17 @@ public class ControleFinanceiro {
             }
 
             int opcaoCategoria = scanner.nextInt();
-            System.out.println("CATEGORIA ESCOLHIDA NUMERO: " + opcaoCategoria);
 
             if(opcaoCategoria == 1) {
                 criarCategoria();
             }
-            else if(opcaoCategoria > categorias.size()) {
+            else if(opcaoCategoria > (categorias.size() + 2)) {
                 System.out.println("Opcao Invalida");
             } else {
-                return categorias.get(opcaoCategoria - 2);
+                // Refatorar depois (Esta um pouco verboso, mas e a fim de teste apenas)
+                int indexCategoria = opcaoCategoria - 2;
+                System.out.println("Categoria Selecionada: " + categorias.get(indexCategoria).getNome());
+                return categorias.get(indexCategoria);
             }
         }
     }
@@ -398,4 +447,66 @@ public class ControleFinanceiro {
         }
     }
 
+    private void removerCategoria() {
+        Scanner scanner = new Scanner(System.in);
+        if(categorias.isEmpty()) {
+            System.out.println("Nao ha categorias para serem removidas!");
+            return;
+        }
+
+        while(true) {
+            System.out.println("Seleciona a categoria: ");
+            for(int i = 0; i < categorias.size(); i++) {
+                System.out.println("[" + (i+1) + "] " + categorias.get(i).getNome());
+            }
+            System.out.println("[0] Voltar");
+            int opcaoCategoria = scanner.nextInt();
+
+            if(opcaoCategoria == 0) {
+                return;
+            }
+
+            if(opcaoCategoria > categorias.size()) {
+                System.out.println("Opcao Invalida");
+            }
+            else {
+                categorias.remove(opcaoCategoria - 1);
+                return;
+            }
+        }
+    }
+
+    private void removerTransacao() {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Transacao> transacoesUsuario = usuario.getTransacoes();
+
+        if(transacoesUsuario.isEmpty()) {
+            System.out.println("Usuario nao possui nenhuma transacao cadastrada!");
+            return;
+        }
+
+        while(true) {
+            System.out.println("Qual transcao deseja remover: ");
+            for(Transacao transacao : transacoesUsuario) {
+                System.out.println(transacao.getDescricao());
+                System.out.println(transacao.getData().toString());
+            }
+            System.out.println("[0] Voltar");
+            int opcaoTransacao = scanner.nextInt();
+
+            if(opcaoTransacao == 0) {
+                return;
+            }
+
+            else if(opcaoTransacao > transacoesUsuario.size()) {
+                System.out.println("Opcao Invalida");
+            }
+            else {
+                transacoesUsuario.remove(opcaoTransacao - 1);
+                System.out.println("Transacao removida com sucesso!");
+                return;
+            }
+        }
+    }
 }
