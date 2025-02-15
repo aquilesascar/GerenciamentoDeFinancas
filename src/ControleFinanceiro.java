@@ -12,9 +12,6 @@ public class ControleFinanceiro {
 
 
     public ControleFinanceiro() {
-        // Usuario de Teste
-        // usuario = new Usuario("Seu José",5000);
-
         /*
         RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
         ERRO DE STACK OVERFLOW!
@@ -29,14 +26,13 @@ public class ControleFinanceiro {
 
         ConexaoSQLite.conectar();
 
-        // Banco de dados tenta carregar o usuario
-        usuario = ConexaoSQLite.carregarUsuario();
+        gerarDadosDeTeste();
 
-        //Cria categorias ja pre-definidas (Testes)
-        categorias.add(new Categoria("Entretenimento"));
-        categorias.add(new Categoria("Alimentacao"));
-        categorias.add(new Categoria("Despezas"));
-        categorias.add(new Categoria("Educacao"));
+        /*
+        Tirar o comentario quando quiser usar o banco de dados
+         */
+        // Banco de dados tenta carregar o usuario
+        // usuario = ConexaoSQLite.carregarUsuario();
 
         // Caso nao haja usuario existente e dado ao usuario a opcao de configurar um novo usuario
         if(usuario == null) {
@@ -488,9 +484,9 @@ public class ControleFinanceiro {
 
         while(true) {
             System.out.println("Qual transcao deseja remover: ");
-            for(Transacao transacao : transacoesUsuario) {
-                System.out.println(transacao.getDescricao());
-                System.out.println(transacao.getData().toString());
+            for(int i = 0; i < transacoesUsuario.size(); i++) {
+                System.out.println("[" + (i+1) + "]" + transacoesUsuario.get(i).getDescricao() +
+                        ": " + transacoesUsuario.get(i).getData().toString());
             }
             System.out.println("[0] Voltar");
             int opcaoTransacao = scanner.nextInt();
@@ -509,4 +505,29 @@ public class ControleFinanceiro {
             }
         }
     }
+
+    public void gerarDadosDeTeste() {
+        // Usuario de teste
+        usuario = new Usuario("Seu Jose", 5000);
+
+        //Categorias pre-definidas
+        categorias.add(new Categoria("Entretenimento"));
+        categorias.add(new Categoria("Alimentacao"));
+        categorias.add(new Categoria("Despesas"));
+        categorias.add(new Categoria("Educacao"));
+
+        Categoria entretenimento = categorias.get(0);
+        Categoria alimentacao = categorias.get(1);
+        Categoria despesa = categorias.get(2);
+        Categoria educacao = categorias.get(3);
+
+        LocalDate dataAgr = LocalDate.now();
+        LocalDate dataChurrasco = LocalDate.of(2025, 2, 12);
+        LocalDate dataEducacaoBonus = LocalDate.of(2025, 1, 27);
+
+        usuario.adicionarTransacao(new Transacao("despesa", "netflix", 45.0, dataAgr, entretenimento));
+        usuario.adicionarTransacao(new Transacao("despesa", "churrasco", 280.55, dataChurrasco, alimentacao));
+        usuario.adicionarTransacao(new Transacao("receita", "bolsa", 100, dataEducacaoBonus, educacao));
+    }
+
 }
