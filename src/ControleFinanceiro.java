@@ -13,7 +13,6 @@ public class ControleFinanceiro {
         // Usuario de Teste
          usuario = new Usuario("Seu José",5000);
 
-
         /*
         RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
         ERRO DE STACK OVERFLOW!
@@ -240,10 +239,12 @@ public class ControleFinanceiro {
                     adicionarCartao();
                     break;
                 case 2:
+                    removerCartao();
                     // Remove um cartao
                     break;
                 case 3:
                     // Lista os cartoes
+                    listarCartao();
                     break;
                 case 0:
                     // volta pro menu principal
@@ -322,6 +323,43 @@ public class ControleFinanceiro {
         }
 
         usuario.adicionarCartao(novoCartao);
+    }
+
+    private void removerCartao() {
+        if(usuario.getCartoes().isEmpty()) {
+            System.out.println("Usuario nao possui cartoes cadastrados!");
+            return;
+        }
+        int cartoesLen = usuario.getCartoes().size();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Qual cartao deseja remover: ");
+
+            for(int i = 0; i < cartoesLen; i++) {
+                System.out.println("[" + (i+1) + "] " + usuario.getCartoes().get(i).getNome());
+            }
+            System.out.println("[0] Sair");
+
+            int opcaoCartao = scanner.nextInt();
+
+            if(opcaoCartao > 0 && opcaoCartao <= cartoesLen) {
+                // Conferir
+                usuario.getCartoes().remove(opcaoCartao - 1);
+                break;
+            }
+            else if (opcaoCartao == 0) {
+                break;
+            } else {
+                System.out.println("Opcao Invalida");
+            }
+        }
+    }
+
+    private void listarCartao() {
+        for(int i = 0; i < usuario.getCartoes().size(); i++) {
+            System.out.println("[" + (i+1) + "] " + usuario.getCartoes().get(i).getNome());
+        }
     }
 
 }
