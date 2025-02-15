@@ -14,7 +14,18 @@ public class CartaoDeCredito extends Cartao{
         this.dataFechamento = dataFechamento;
     }
 
-    /*
+    public double getLimite() {
+        return limite;
+    }
+
+    public double getSaldoDisponivel() {
+        return saldoDisponivel;
+    }
+
+    public LocalDate getDataFechamento() {
+        return dataFechamento;
+    }
+/*
     public boolean adicionarCompra(Transacao transacao) {
         if (transacao.getValor() <= saldoDisponivel) {
             fatura.add(transacao);
@@ -46,4 +57,6 @@ public class CartaoDeCredito extends Cartao{
             System.out.println("Atenção! Seu saldo disponível está abaixo de 10% do limite.");
         }
     }
+
+
 }

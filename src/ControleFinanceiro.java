@@ -230,12 +230,15 @@ public class ControleFinanceiro {
                     break;
                 case 3:
                     // lista as transacoes do Mes Atual
+                    listarTransacoesMesAtual();
                     break;
                 case 4:
                     // Lista as transacoes futuras
+                    listarTransacoesFuturas();
                     break;
                 case 5:
                     // Ve a fatura do cartao do usuario (Talvez deixar essa opcao em cartoes)
+                    verFaturaAtual();
                     break;
                 case 0:
                     // volta para o menu anterior (menuPrincipal)
@@ -244,6 +247,67 @@ public class ControleFinanceiro {
                     System.out.println("Opcao Invalida");
                     break;
             }
+        }
+    }
+
+    private void verFaturaAtual() {
+        if (usuario.getCartoes().isEmpty()) {
+            System.out.println("Nenhum cartão cadastrado.");
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Selecione o cartão para ver a fatura:");
+        listarCartao();
+        int opcaoCartao = scanner.nextInt();
+
+        if (opcaoCartao > 0 && opcaoCartao <= usuario.getCartoes().size()) {
+            Cartao cartao = usuario.getCartoes().get(opcaoCartao - 1);
+            if (cartao instanceof CartaoDeCredito) {
+                CartaoDeCredito cartaoCredito = (CartaoDeCredito) cartao;
+                double totalFatura = cartaoCredito.getLimite() - cartaoCredito.getSaldoDisponivel();
+                System.out.println("Fatura atual do cartão " + cartaoCredito.getNome() + ": R$" + totalFatura);
+            } else {
+                System.out.println("Este cartão não é um cartão de crédito.");
+            }
+        } else {
+            System.out.println("Opção inválida.");
+        }
+    }
+
+    private void listarTransacoesMesAtual() {
+        LocalDate hoje = LocalDate.now();
+        int mesAtual = hoje.getMonthValue();
+        int anoAtual = hoje.getYear();
+
+        List<Transacao> transacoesMesAtual = usuario.getTransacoes().stream()
+                .filter(transacao -> transacao.getData().getMonthValue() == mesAtual && transacao.getData().getYear() == anoAtual)
+                .toList();
+
+        if (transacoesMesAtual.isEmpty()) {
+            System.out.println("Nenhuma transação encontrada para o mês atual.");
+        } else {
+            System.out.println("Transações do mês atual:");
+            transacoesMesAtual.forEach(transacao -> System.out.println(
+                    transacao.getDescricao() + " - " + transacao.getValor() + " - " + transacao.getData()
+            ));
+        }
+    }
+
+    private void listarTransacoesFuturas() {
+        LocalDate hoje = LocalDate.now();
+
+        List<Transacao> transacoesFuturas = usuario.getTransacoes().stream()
+                .filter(transacao -> transacao.getData().isAfter(hoje))
+                .toList();
+
+        if (transacoesFuturas.isEmpty()) {
+            System.out.println("Nenhuma transação futura encontrada.");
+        } else {
+            System.out.println("Transações futuras:");
+            transacoesFuturas.forEach(transacao -> System.out.println(
+                    transacao.getDescricao() + " - " + transacao.getValor() + " - " + transacao.getData()
+            ));
         }
     }
 
