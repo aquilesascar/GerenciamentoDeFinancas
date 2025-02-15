@@ -30,4 +30,12 @@ public class Usuario {
     public double getSaldo() {
         return saldo;
     }
+
+    public List<Cartao> getCartoes() {
+        return cartoes;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
 }

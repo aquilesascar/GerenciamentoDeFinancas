@@ -4,14 +4,14 @@ import java.util.Scanner;
 
 // Classe que controla a interação entre usuário e sistema
 public class ControleFinanceiro {
-    private Usuario usuario;
-    private ArrayList<Categoria> categorias;
+    protected Usuario usuario;
+    protected ArrayList<Categoria> categorias;
     private RelatorioService relatorioService;
 
 
     public ControleFinanceiro() {
         // Usuario de Teste
-        // usuario = new Usuario("Seu José",5000);
+         usuario = new Usuario("Seu José",5000);
 
 
         /*
