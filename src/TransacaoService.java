@@ -1,3 +1,6 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +54,31 @@ public class TransacaoService {
         }
     }
 
-    public void realizarTransacao() {
+    public static void atualizarSaldoNoBanco(String nomeUsuario, double novoSaldo) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "UPDATE USUARIO SET saldo = ? WHERE nome = ?";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setDouble(1, novoSaldo);
+                stmt.setString(2, nomeUsuario);
+                stmt.executeUpdate();
+                System.out.println("✅ Saldo atualizado com sucesso!");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao atualizar saldo: " + e.getMessage());
+        }
+    }
+
+    private void realizarTransacao() {
         Scanner scanner = new Scanner(System.in);
 
         // Validador de categorias
-        Categoria categoriaCompra = validarCategoriaTransacao();
+        Categoria categoriaCompra = validarCategoria();
 
         System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
         System.out.println("[1] Receita\n[2] Despesa");
-        String tipoStr = scanner.nextLine(); // mudar pra int (talvez)
+        int tipoTransacao = scanner.nextInt(); // Alterado para int
+        scanner.nextLine(); // Consumir a nova linha
 
         System.out.println("Qual a descricao que gostaria de colocar para a transacao? ");
         String descricaoTransacao = scanner.nextLine();
@@ -76,52 +95,49 @@ public class TransacaoService {
         int ano = scanner.nextInt();
         LocalDate dataTransacao = LocalDate.of(ano, mes, dia);
 
-        System.out.println("E uma transacao recorrente? ");
+        System.out.println("É uma transacao recorrente? ");
         System.out.println("[1] Sim\n[2] Nao");
         int opcaoTransacaoRecorrente = scanner.nextInt();
-        switch (opcaoTransacaoRecorrente) {
-            case 1:
-                //String tipo, String descricao, double valor, LocalDate data, Categoria categoria
-                TransacaoRecorrente transacao = new TransacaoRecorrente(tipoStr, descricaoTransacao,
-                        valorTransacao, dataTransacao, categoriaCompra);
-                this.usuario.adicionarTransacao(transacao);
 
-                break;
-            case 2:
-                System.out.println("Forma de Pagamnento: ");
-                System.out.println("[1] A vista\n[2] Parcelado ");
-                int opcaoPagamento = scanner.nextInt();
-                TransacaoVariavel transacaoVariavel;
-                switch (opcaoPagamento) {
-                    case 1:
-                        // a vista
-                        //String tipo, String descricao, double valor, LocalDate data, Categoria categoria, int quantParcelas
-                        transacaoVariavel = new TransacaoVariavel(tipoStr,descricaoTransacao,valorTransacao,dataTransacao,
-                                categoriaCompra,1);
-                        this.usuario.adicionarTransacao(transacaoVariavel);
-                        System.out.println("Transação feita com sucesso!");
-                        System.out.println(transacaoVariavel.getDescricao()+"   "+transacaoVariavel.getQuantParcelas()+
-                                "x de "+transacaoVariavel.getValorParcela());
-                        break;
-
-                    case 2:
-                        System.out.println("Qual a quantidade de parcelas? ");
-                        int opcaoParcelas = scanner.nextInt();
-                        transacaoVariavel= new TransacaoVariavel(tipoStr,descricaoTransacao,valorTransacao,dataTransacao,
-                                categoriaCompra,opcaoParcelas);
-                        this.usuario.adicionarTransacao(transacaoVariavel);
-                        System.out.println("Transação adicionada com sucesso!");
-                        System.out.println(transacaoVariavel.getDescricao()+"   "+transacaoVariavel.getQuantParcelas()+
-                                "x de "+transacaoVariavel.getValorParcela()+"   Total: "+transacaoVariavel.getValor());
-                        break;
-                    default:
-                        System.out.println("Esta opção não existe.");
-                        break;
-                }
-
-            default:
-                System.out.println("Esta opção nao existe.");
+        // Atualizar saldo do usuário
+        double saldoAtual = usuario.getSaldo();
+        if (tipoTransacao == 1) { // Receita
+            saldoAtual += valorTransacao;
+        } else if (tipoTransacao == 2) { // Despesa
+            saldoAtual -= valorTransacao;
         }
+        usuario.setSaldo(saldoAtual);
+
+        // Atualizar saldo no banco de dados
+        atualizarSaldoNoBanco(usuario.getNome(), saldoAtual);
+
+        // Criar transação
+        if (opcaoTransacaoRecorrente == 1) {
+            // Transação recorrente
+            TransacaoRecorrente transacao = new TransacaoRecorrente(
+                    (tipoTransacao == 1) ? "receita" : "despesa",
+                    descricaoTransacao,
+                    valorTransacao,
+                    dataTransacao,
+                    categoriaCompra
+            );
+            usuario.adicionarTransacao(transacao);
+            System.out.println("✅ Transação recorrente adicionada com sucesso!");
+        } else {
+            // Transação única
+            TransacaoVariavel transacaoVariavel = new TransacaoVariavel(
+                    (tipoTransacao == 1) ? "receita" : "despesa",
+                    descricaoTransacao,
+                    valorTransacao,
+                    dataTransacao,
+                    categoriaCompra,
+                    1 // Parcelas (1 para transação única)
+            );
+            usuario.adicionarTransacao(transacaoVariavel);
+            System.out.println("✅ Transação única adicionada com sucesso!");
+        }
+
+        System.out.println("Saldo atualizado: " + usuario.getSaldo());
     }
 
     private Categoria validarCategoriaTransacao() {
