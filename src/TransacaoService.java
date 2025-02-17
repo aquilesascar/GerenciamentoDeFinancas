@@ -54,26 +54,11 @@ public class TransacaoService {
         }
     }
 
-    public static void atualizarSaldoNoBanco(String nomeUsuario, double novoSaldo) {
-        try (Connection conexao = DriverManager.getConnection(URL)) {
-            String sql = "UPDATE USUARIO SET saldo = ? WHERE nome = ?";
-
-            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-                stmt.setDouble(1, novoSaldo);
-                stmt.setString(2, nomeUsuario);
-                stmt.executeUpdate();
-                System.out.println("✅ Saldo atualizado com sucesso!");
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Erro ao atualizar saldo: " + e.getMessage());
-        }
-    }
-
-    private void realizarTransacao() {
+    public void realizarTransacao() {
         Scanner scanner = new Scanner(System.in);
 
         // Validador de categorias
-        Categoria categoriaCompra = validarCategoria();
+        Categoria categoriaCompra = validarCategoriaTransacao();
 
         System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
         System.out.println("[1] Receita\n[2] Despesa");
@@ -106,10 +91,10 @@ public class TransacaoService {
         } else if (tipoTransacao == 2) { // Despesa
             saldoAtual -= valorTransacao;
         }
-        usuario.setSaldo(saldoAtual);
+        this.usuario.setSaldo(saldoAtual);
 
         // Atualizar saldo no banco de dados
-        atualizarSaldoNoBanco(usuario.getNome(), saldoAtual);
+        ConexaoSQLite.atualizarSaldoNoBanco(this.usuario.getNome(), saldoAtual);
 
         // Criar transação
         if (opcaoTransacaoRecorrente == 1) {

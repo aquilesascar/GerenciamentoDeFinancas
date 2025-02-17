@@ -36,7 +36,7 @@ public class Transacao {
         this.categoria = categoria;
     }
 
-    public void gerarTransacoesRecorrentes() {
+    public void gerarTransacoesRecorrentes(Usuario usuario) {
         LocalDate hoje = LocalDate.now();
         int mesAtual = hoje.getMonthValue();
         int anoAtual = hoje.getYear();
@@ -64,7 +64,7 @@ public class Transacao {
                     transacaoRecorrente.atualizarProximaData();
 
                     // Salva a nova transação no banco de dados
-                    adicionarTransacaoNoBanco(novaTransacao, usuario.getNome());
+                    // ConexaoSQLite.adicionarTransacaoNoBanco(novaTransacao, usuario.getNome());
 
                     System.out.println("Transação recorrente gerada: " + novaTransacao.getDescricao());
                 }

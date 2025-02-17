@@ -108,6 +108,21 @@ public class ConexaoSQLite {
         }
     }
 
+    public static void atualizarSaldoNoBanco(String nomeUsuario, double novoSaldo) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "UPDATE USUARIO SET saldo = ? WHERE nome = ?";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setDouble(1, novoSaldo);
+                stmt.setString(2, nomeUsuario);
+                stmt.executeUpdate();
+                System.out.println("✅ Saldo atualizado com sucesso!");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao atualizar saldo: " + e.getMessage());
+        }
+    }
+
         public static List<Transacao> filtrarTransacoesPorCategoria(String nomeCategoria) {
             List<Transacao> transacoes = new ArrayList<>();
     

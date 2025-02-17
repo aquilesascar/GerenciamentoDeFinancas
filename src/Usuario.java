@@ -31,6 +31,10 @@ public class Usuario {
         return saldo;
     }
 
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
     public List<Cartao> getCartoes() {
         return cartoes;
     }
