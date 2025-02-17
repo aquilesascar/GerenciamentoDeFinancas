@@ -59,7 +59,9 @@ public class TransacaoService {
         int mesAtual = hoje.getMonthValue();
         int anoAtual = hoje.getYear();
 
-        for (Transacao transacao : usuario.getTransacoes()) {
+        List<Transacao> copiaTransacoes = new ArrayList<>(usuario.getTransacoes());
+
+        for (Transacao transacao : copiaTransacoes) {
             if (transacao instanceof TransacaoRecorrente) {
                 TransacaoRecorrente transacaoRecorrente = (TransacaoRecorrente) transacao;
                 LocalDate proximaData = transacaoRecorrente.getProximaData();
@@ -77,6 +79,7 @@ public class TransacaoService {
 
                     // Adiciona a nova transação ao usuário
                     this.usuario.adicionarTransacao(novaTransacao);
+                    System.out.println("NOVA TRANSACAO " + novaTransacao.getDescricao());
 
                     // Atualiza a próxima data da transação recorrente
                     transacaoRecorrente.atualizarProximaData();
@@ -89,8 +92,6 @@ public class TransacaoService {
             }
         }
     }
-
-
 
     public void realizarTransacao() {
         Scanner scanner = new Scanner(System.in);
