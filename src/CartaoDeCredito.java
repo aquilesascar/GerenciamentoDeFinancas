@@ -7,8 +7,8 @@ public class CartaoDeCredito extends Cartao{
     private LocalDate dataFechamento;
 
     // Construtor para novos cartoes de credito
-    public CartaoDeCredito(String nome, String bandeira, double limite, double saldoDisponivel, LocalDate dataFechamento) {
-        super(nome, bandeira);
+    public CartaoDeCredito(String nome, double limite, double saldoDisponivel, LocalDate dataFechamento) {
+        super(nome);
         this.limite = limite;
         this.saldoDisponivel = saldoDisponivel;
         this.dataFechamento = dataFechamento;

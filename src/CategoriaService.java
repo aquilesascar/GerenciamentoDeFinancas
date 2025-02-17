@@ -8,15 +8,12 @@ public class CategoriaService {
 
     public CategoriaService(Usuario usuario) {
         this.usuario = usuario;
-        categorias = new ArrayList<Categoria>();
+        categorias = ConexaoSQLite.carregarCategorias();
     }
 
     public List<Categoria> getCategorias() {
         return categorias;
     }
-
-    //TO-DO
-    public void carregarCategorias() {}
 
     public void criarCategoria() {
         Scanner scanner = new Scanner(System.in);
@@ -30,6 +27,7 @@ public class CategoriaService {
             } else {
                 Categoria novaCategoria = new Categoria(nomeCategoria);
                 categorias.add(novaCategoria);
+                ConexaoSQLite.adicionarCategoriaDB(novaCategoria);
                 return;
             }
         }
@@ -69,6 +67,9 @@ public class CategoriaService {
                 System.out.println("Opcao Invalida");
             }
             else {
+                Categoria categoriaRemover = categorias.get(opcaoCategoria-1);
+                ConexaoSQLite.removerCategoriaBD(categoriaRemover.getNome());
+
                 categorias.remove(opcaoCategoria - 1);
                 return;
             }

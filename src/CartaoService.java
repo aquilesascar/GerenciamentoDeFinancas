@@ -45,15 +45,6 @@ public class CartaoService {
         // validar
         String nomeCartao = scanner.nextLine();
 
-        //não precisa do número do cartão, melhor por segurança
-        /*System.out.println("Digite o numero do cartao: ");
-        // validar
-        String numeroCartao = scanner.nextLine();
-         */
-        System.out.println("Digite a bandeira do cartao: ");
-        // validar
-        String bandeiraCartao = scanner.nextLine();
-
         if(opcaoCartao == CREDITO) {
             System.out.println("Limite do cartao: ");
             int limiteCartao = scanner.nextInt();
@@ -73,11 +64,11 @@ public class CartaoService {
             int anoAtual = LocalDate.now().getYear();
             LocalDate dataFechamento = LocalDate.of(anoAtual, mesFechamentoFatura, diaFechamentoFatura);
 
-            novoCartao = new CartaoDeCredito(nomeCartao, bandeiraCartao, limiteCartao, saldoDisponivel, dataFechamento);
+            novoCartao = new CartaoDeCredito(nomeCartao, limiteCartao, saldoDisponivel, dataFechamento);
         }
 
         else if (opcaoCartao == DEBITO) {
-            novoCartao = new CartaoDeDebito(nomeCartao, bandeiraCartao);
+            novoCartao = new CartaoDeDebito(nomeCartao);
         }
 
         usuario.adicionarCartao(novoCartao);
