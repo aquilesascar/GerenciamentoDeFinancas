@@ -24,24 +24,22 @@ public class ControleFinanceiro {
         // Implementação do fluxo principal do sistema
         Scanner scanner = new Scanner(System.in);
 
-        ConexaoSQLite.conectar();
-
-        gerarDadosDeTeste();
+        // gerarDadosDeTeste();
 
         /*
         Tirar o comentario quando quiser usar o banco de dados
          */
         // Banco de dados tenta carregar o usuario
-        // usuario = ConexaoSQLite.carregarUsuario();
+        usuario = ConexaoSQLite.carregarUsuario();
 
         // Caso nao haja usuario existente e dado ao usuario a opcao de configurar um novo usuario
         if(usuario == null) {
-            // Configuracao Inicial do Usuario (Caso nao Haja usuario Registrado)
+            // Configuracao Inicial do Usuario
+            // (Caso nao Haja usuario Registrado ou nao tenha possivel fazer uma requisicao do banco de dados)
             configInicialUsuario();
         }
 
         System.out.println("Usuario: " + usuario.getNome());
-        // menuPrincipal();
         menuPrincipal = new MenuPrincipal(usuario);
         menuPrincipal.exibir();
     }

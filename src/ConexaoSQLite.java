@@ -6,7 +6,6 @@ import java.util.List;
 public class ConexaoSQLite {
     // Talvez nao sera uma classe static
     private static final String URL = "jdbc:sqlite:src/database/banco.sqlite"; // Caminho do arquivo
-    private static Connection conexao;
 
     public static void main(String[] args) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
@@ -58,6 +57,7 @@ public class ConexaoSQLite {
 }
      */
 
+    /*
     public static void conectar() {
         try (Connection conexao = DriverManager.getConnection(URL)) {
             System.out.println("Conectado com sucesso!");
@@ -69,6 +69,7 @@ public class ConexaoSQLite {
     public static void desconectar() {
         //TO DO
     }
+     */
 
     public static void adicionarUsuarioDB(Usuario usuario) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
@@ -83,6 +84,27 @@ public class ConexaoSQLite {
             }
         } catch (Exception e) {
             System.out.println("❌ Erro ao cadastrar: " + e.getMessage());
+        }
+    }
+
+    public static void adicionarCategoriaDB(Categoria categoria) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "INSERT INTO CATEGORIA (nome) VALUES (?)";
+            System.out.println("Executando query: " + sql);
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setString(1, categoria.getNome());
+                int linhasAfetadas = stmt.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("✅ Categoria " + categoria.getNome() + " cadastrada com sucesso!");
+                } else {
+                    System.out.println("❌ Nenhuma linha foi afetada. Verifique a tabela e os dados.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Erro ao cadastrar: " + e.getMessage());
+            e.printStackTrace(); // Isso ajudará a identificar o erro exato
         }
     }
 
@@ -198,5 +220,45 @@ public class ConexaoSQLite {
             System.out.println("❌ Erro: " + e.getMessage());
         }
         return null;
+    }
+
+    public static List<Categoria> carregarCategorias() {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            List<Categoria> categorias = new ArrayList<>();
+
+            String sql = "SELECT * FROM CATEGORIA";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()) {
+                    String nome = rs.getString("NOME");
+                    categorias.add(new Categoria(nome));
+                }
+                return categorias;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static void removerCategoriaBD(String nomeCategoria) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+         // Categoria encontrada, prossegue com a exclusão
+            String sqlDeletar = "DELETE FROM CATEGORIA WHERE NOME = ?";
+            try (PreparedStatement stmtDeletar = conexao.prepareStatement(sqlDeletar)) {
+                stmtDeletar.setString(1, nomeCategoria);
+                int linhasAfetadas = stmtDeletar.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("✅ Categoria com NOME " + nomeCategoria + " deletada com sucesso!");
+                } else {
+                    System.out.println("❌ Nenhuma categoria foi deletada.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Erro ao deletar categoria: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
