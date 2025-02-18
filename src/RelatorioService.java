@@ -12,7 +12,7 @@ public  class RelatorioService  {
         int ano= sc.nextInt();
         System.out.println("Digite o mês do relatorio");
         int mes= sc.nextInt();
-        ArrayList<Transacao> transacoes = ConexaoSQLite.filtrarTransacoesPorMesAno(mes,ano);
+        ArrayList<Transacao> transacoes = ArrayParaTeste.arrayTransacoesTeste();
         ordenarTranscoes(transacoes);
         double valorTotalEntradas= calcularEntradas(transacoes);
         double valortotalSaidas =calcularGastos(transacoes);

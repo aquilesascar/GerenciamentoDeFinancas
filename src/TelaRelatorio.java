@@ -49,17 +49,29 @@ public class TelaRelatorio extends Application {
 
             PieChart pieChart = new PieChart();
             ArrayList<Transacao> transacoesCategoria = new ArrayList<>();
-            for (Categoria categoria : categorias) {
-                transacoesCategoria = ConexaoSQLite.filtrarTransacoesPorCategoria(categoria.getNome());
+           /* for (Categoria categoria : categorias) {
+                transacoesCategoria = (ArrayList<Transacao>) ConexaoSQLite.filtrarTransacoesPorCategoria(categoria.getNome());
                 PieChart.Data pedaço = new PieChart.Data(categoria.getNome(), transacoesCategoria.size());
                 pieChart.getData().add(pedaço);
             }
 
+            */
+
+            //Grafico apenas para fazar teste
+            PieChart.Data pedaço1 = new PieChart.Data("Lazer",30);
+            PieChart.Data pedaço2 = new PieChart.Data("Esporte",30);
+            PieChart.Data pedaço3 = new PieChart.Data("SuperMercado",50);
+            PieChart.Data pedaço4 = new PieChart.Data("Gasolina",40);
+            pieChart.getData().addAll(pedaço1,pedaço2,pedaço3,pedaço4);
+
             Button botaoRelatorio = new Button(" Biaxar Relatorio");
             botaoRelatorio.setOnAction(e -> {ArquivoRelatorio.downloadTransacoes(transacoes, totalEntrdas, totalDespesa);});
 
+            Button botaoGraficoCategoria = new Button(" Baixar Graficos das categorias");
+            botaoGraficoCategoria.setOnAction(e -> {ArquivoRelatorio.salvarGraficoImagem(pieChart,stage,"Grafico_Categorias");});
+
             VBox vbox = new VBox(50);
-            vbox.getChildren().addAll(scrollPane, pieChart, botaoRelatorio);
+            vbox.getChildren().addAll(scrollPane, pieChart, botaoRelatorio,botaoGraficoCategoria);
 
             Scene scene = new Scene(vbox, 600, 600);
 
@@ -84,7 +96,7 @@ public class TelaRelatorio extends Application {
     private static void setTransacoes(ArrayList<Transacao> listaTransacoes, ArrayList<Categoria> listaCategorias, double totalEntrdas, double totalDespesa) {
         transacoes= listaTransacoes;
         categorias = listaCategorias;
-        totalEntrdas = totalEntrdas;
-        totalDespesa = totalDespesa;
+        TelaRelatorio.totalEntrdas = totalEntrdas;
+        TelaRelatorio.totalDespesa = totalDespesa;
     }
 }

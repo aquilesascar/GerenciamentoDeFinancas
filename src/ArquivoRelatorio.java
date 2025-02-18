@@ -34,10 +34,10 @@ public class ArquivoRelatorio {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
                 writer.write("RELATÓRIO DE TRANSAÇÃO");
                 writer.newLine();
-                while (!transacoes.isEmpty()) {
-                    writer.write(transacoes.get(0).toString());
-                    writer.newLine();
-                }
+               for (Transacao transacao : transacoes) {
+                   writer.write(transacao.toString());
+                   writer.newLine();
+               }
                 writer.newLine();
                 writer.newLine();
                 writer.write("VALOR TOTAL DE ENTRADAS: " + valorEntrada);
@@ -52,8 +52,8 @@ public class ArquivoRelatorio {
         }
     }
 
-    public class SalvarGrafico {
-        public void salvarGraficoImagem(PieChart pieChart, Stage stage, String nomeArquivo) {
+
+        public static void salvarGraficoImagem(PieChart pieChart, Stage stage, String nomeArquivo) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Escolha onde salvar o arquivo");
 
@@ -78,7 +78,7 @@ public class ArquivoRelatorio {
                 System.out.println("⚠️ Salvamento cancelado pelo usuário.");
             }
         }
-    }
+
 
 
 
