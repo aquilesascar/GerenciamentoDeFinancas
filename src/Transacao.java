@@ -35,4 +35,12 @@ public class Transacao {
         this.data = data;
         this.categoria = categoria;
     }
+
+    @Override
+    public String toString() {
+        return  descricao+'\''+
+                data.getDayOfMonth()+"/"+data.getMonthValue()+"/"+data.getYear()+'\''+
+                categoria.getNome()+'\''+
+                "R$"+valor;
+    }
 }

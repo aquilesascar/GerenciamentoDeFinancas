@@ -160,6 +160,7 @@ public class ControleFinanceiro {
                     menuCartao();
                     break;
                 case 3:
+                    RelatorioService.gerarRelatorioMesAno(categorias);
                     // Gera o relatorio para o usuario
                     // gerarRelatorio()
                     break;
