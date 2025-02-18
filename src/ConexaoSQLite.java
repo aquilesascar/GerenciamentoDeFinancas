@@ -7,30 +7,6 @@ public class ConexaoSQLite {
     // Talvez nao sera uma classe static
     private static final String URL = "jdbc:sqlite:src/database/banco.sqlite"; // Caminho do arquivo
 
-    public static void main(String[] args) {
-        try (Connection conexao = DriverManager.getConnection(URL)) {
-
-            String sql = "SELECT * FROM USUARIO";
-            try (PreparedStatement stmt = conexao.prepareStatement(sql);
-                 ResultSet rs = stmt.executeQuery()) {
-
-                System.out.println("📌 Lista de Usuários:");
-                while (rs.next()) {
-                    // int id = rs.getInt("id");
-                    String nome = rs.getString("NOME");
-                    double saldo = rs.getDouble("SALDO");
-
-                    System.out.println("NOME: " + nome);
-                    System.out.println("SALDO: " + saldo);
-
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.println("❌ Erro: " + e.getMessage());
-        }
-    }
-
     /*
     public static void main(String[] args) {
     // Conectar ao banco de dados
@@ -105,6 +81,35 @@ public class ConexaoSQLite {
         } catch (SQLException e) {
             System.out.println("❌ Erro ao cadastrar: " + e.getMessage());
             e.printStackTrace(); // Isso ajudará a identificar o erro exato
+        }
+    }
+
+    public static void adicionarCartaoBD(Cartao cartao) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+
+            String sql = "INSERT INTO CARTAO (nome, tipo, data_fechamento, limite, limite_disponivel) VALUES (?, ?, ?, ?, ?)";;
+            ArrayList<String> dadosCartao = cartao.gerarDadosDB();
+            System.out.println(dadosCartao.toString());
+            System.out.println(dadosCartao.get(4));
+
+            boolean isCredito = cartao instanceof CartaoDeCredito;
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setString(1, dadosCartao.get(0));
+                stmt.setString(2, dadosCartao.get(1));
+
+                if(isCredito) {
+                    stmt.setInt(3, Integer.parseInt(dadosCartao.get(2)));
+                    stmt.setDouble(4, Double.parseDouble(dadosCartao.get(3)));
+                    stmt.setDouble(5, Double.parseDouble(dadosCartao.get(4)));
+                }
+
+                stmt.executeUpdate();
+                System.out.println("✅ Cartao de " + dadosCartao.get(1) + "adicionado com sucesso!");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao adicionar cartao: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -237,6 +242,38 @@ public class ConexaoSQLite {
         return null;
     }
 
+    public static List<Cartao> carregarCartao() {
+        List<Cartao> cartoes = new ArrayList<>();
+        Cartao novoCartao = null;
+
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "SELECT * FROM CARTAO";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    String nome = rs.getString("NOME");
+                    String tipo = rs.getString("TIPO");
+
+                    if(tipo.equals("CREDITO")) {
+                        int dataFechamento = rs.getInt("DATA_FECHAMENTO");
+                        double limite = rs.getDouble("LIMITE");
+                        double limiteDisponivel = rs.getDouble("LIMITE_DISPONIVEL");
+
+                        novoCartao = new CartaoDeCredito(nome, limite, limiteDisponivel, dataFechamento);
+                    } else {
+                        novoCartao = new CartaoDeDebito(nome);
+                    }
+                    cartoes.add(novoCartao);
+                }
+                return cartoes;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+        return cartoes;
+    }
+
     public static List<Categoria> carregarCategorias() {
         try (Connection conexao = DriverManager.getConnection(URL)) {
             List<Categoria> categorias = new ArrayList<>();
@@ -273,6 +310,26 @@ public class ConexaoSQLite {
             }
         } catch (SQLException e) {
             System.out.println("❌ Erro ao deletar categoria: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void removerCartaoBD(String nomeCartao) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            // Categoria encontrada, prossegue com a exclusão
+            String sqlDeletar = "DELETE FROM CARTAO WHERE NOME = ?";
+            try (PreparedStatement stmtDeletar = conexao.prepareStatement(sqlDeletar)) {
+                stmtDeletar.setString(1, nomeCartao);
+                int linhasAfetadas = stmtDeletar.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("✅ Cartao " + nomeCartao + " deletado com sucesso!");
+                } else {
+                    System.out.println("❌ Nenhum cartao foi deletado.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Nao foi possivel deletar o cartao: " + e.getMessage());
             e.printStackTrace();
         }
     }

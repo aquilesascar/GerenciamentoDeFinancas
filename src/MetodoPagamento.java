@@ -1,5 +1,5 @@
 public abstract class MetodoPagamento {
-    private String nome;
+    protected String nome;
 
     public MetodoPagamento(String nome){
         this.nome = nome;

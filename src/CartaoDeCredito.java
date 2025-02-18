@@ -1,16 +1,16 @@
 import java.time.LocalDate;
-import java.util.List;
+import java.util.ArrayList;
 
 public class CartaoDeCredito extends Cartao{
     private double limite;
-    private double saldoDisponivel;
-    private LocalDate dataFechamento;
+    private double limiteDisponivel;
+    private int dataFechamento;
 
     // Construtor para novos cartoes de credito
-    public CartaoDeCredito(String nome, double limite, double saldoDisponivel, LocalDate dataFechamento) {
+    public CartaoDeCredito(String nome, double limite, double limiteDisponivel, int dataFechamento) {
         super(nome);
         this.limite = limite;
-        this.saldoDisponivel = saldoDisponivel;
+        this.limiteDisponivel = limiteDisponivel;
         this.dataFechamento = dataFechamento;
     }
 
@@ -18,11 +18,11 @@ public class CartaoDeCredito extends Cartao{
         return limite;
     }
 
-    public double getSaldoDisponivel() {
-        return saldoDisponivel;
+    public double getLimiteDisponivel() {
+        return limiteDisponivel;
     }
 
-    public LocalDate getDataFechamento() {
+    public int getDataFechamento() {
         return dataFechamento;
     }
 /*
@@ -50,13 +50,24 @@ public class CartaoDeCredito extends Cartao{
      */
 
     public void verificarLimite() {
-        double gasto = limite - saldoDisponivel;
-        System.out.println("Saldo disponível: R$" + saldoDisponivel);
+        double gasto = limite - limiteDisponivel;
+        System.out.println("Saldo disponível: R$" + limiteDisponivel);
         System.out.println("Valor já utilizado: R$" + gasto);
-        if (saldoDisponivel < limite * 0.1) {
+        if (limiteDisponivel < limite * 0.1) {
             System.out.println("Atenção! Seu saldo disponível está abaixo de 10% do limite.");
         }
     }
 
 
+    @Override
+    public ArrayList<String> gerarDadosDB() {
+        ArrayList<String> dados = new ArrayList<>();
+        dados.add(super.nome);
+        dados.add("CREDITO");
+        dados.add(String.valueOf(this.dataFechamento));
+        dados.add(String.valueOf(this.limite));
+        dados.add(String.valueOf(this.limiteDisponivel));
+
+        return dados;
+    }
 }
