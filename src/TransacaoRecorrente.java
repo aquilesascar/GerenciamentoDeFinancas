@@ -3,10 +3,10 @@ import java.time.LocalDate;
 public class TransacaoRecorrente extends Transacao {
     private LocalDate proximaData;
 
-    public TransacaoRecorrente(String tipo, String descricao, double valor, LocalDate data, Categoria categoria) {
-        super(tipo, descricao, valor, data, categoria);
-        this.proximaData = data; // A próxima data inicial é a data da transação
+    public TransacaoRecorrente(String tipo, String descricao, double valor, LocalDate data, Categoria categoria, String metodoPagamento) {
+        super(tipo, descricao, valor, data, categoria, metodoPagamento);
     }
+
 
     public LocalDate getProximaData() {
         return proximaData;

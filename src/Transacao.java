@@ -7,6 +7,7 @@ public class Transacao {
     private double valor;
     private LocalDate data;
     private Categoria categoria;
+    private String metodoPagamento;
 
     public String getTipo() {
         return tipo;
@@ -28,11 +29,12 @@ public class Transacao {
         return categoria;
     }
 
-    public Transacao(String tipo, String descricao, double valor, LocalDate data, Categoria categoria) {
+    public Transacao(String tipo, String descricao, double valor, LocalDate data, Categoria categoria, String metodoPagamento) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
         this.categoria = categoria;
+        this.metodoPagamento = metodoPagamento;
     }
 }

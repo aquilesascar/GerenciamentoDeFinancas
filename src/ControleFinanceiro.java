@@ -90,9 +90,6 @@ public class ControleFinanceiro {
         LocalDate dataChurrasco = LocalDate.of(2025, 2, 12);
         LocalDate dataEducacaoBonus = LocalDate.of(2025, 1, 27);
 
-        usuario.adicionarTransacao(new Transacao("despesa", "netflix", 45.0, dataAgr, entretenimento));
-        usuario.adicionarTransacao(new Transacao("despesa", "churrasco", 280.55, dataChurrasco, alimentacao));
-        usuario.adicionarTransacao(new Transacao("receita", "bolsa", 100, dataEducacaoBonus, educacao));
     }
 
 }

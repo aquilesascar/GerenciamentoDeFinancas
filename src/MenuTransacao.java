@@ -45,7 +45,7 @@ public class MenuTransacao extends Menu {
                     transacaoService.verFaturaAtual();
                     break;
                 case 6:
-                    transacaoService.gerarTransacoesRecorrentes();
+                    // transacaoService.gerarTransacoesRecorrentes();
                 case 0:
                     // volta para o menu anterior (menuPrincipal)
                     return;
