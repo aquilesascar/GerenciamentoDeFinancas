@@ -1,6 +1,3 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -243,7 +240,7 @@ public class TransacaoService {
             Cartao cartao = usuario.getCartoes().get(opcaoCartao - 1);
             if (cartao instanceof CartaoDeCredito) {
                 CartaoDeCredito cartaoCredito = (CartaoDeCredito) cartao;
-                double totalFatura = cartaoCredito.getLimite() - cartaoCredito.getSaldoDisponivel();
+                double totalFatura = cartaoCredito.getLimite() - cartaoCredito.getLimiteDisponivel();
                 System.out.println("Fatura atual do cartão " + cartaoCredito.getNome() + ": R$" + totalFatura);
             } else {
                 System.out.println("Este cartão não é um cartão de crédito.");

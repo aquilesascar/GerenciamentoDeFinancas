@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -45,33 +45,41 @@ public class CartaoService {
         // validar
         String nomeCartao = scanner.nextLine();
 
+        if(isCartaoCadastrado(nomeCartao)) {
+            System.out.println("Esse cartao ja se encontra cadastrado no sistema!");
+            return;
+        }
+
         if(opcaoCartao == CREDITO) {
             System.out.println("Limite do cartao: ");
-            int limiteCartao = scanner.nextInt();
+            double limiteCartao = scanner.nextDouble();
 
-            System.out.println("Saldo disponivel: ");
-            int saldoDisponivel = scanner.nextInt();
+            System.out.println("Limite disponivel: ");
+            double limiteDisponivel = scanner.nextDouble();
 
             System.out.println("Data de Fechamento da Fatura do Cartao");
             System.out.println("Dia: ");
             // Validar
-            int diaFechamentoFatura = scanner.nextInt();
+            int dataFechamento = scanner.nextInt();
 
+            /*
             //Validar
             System.out.println("Mes de Fechamento do cartao (1...12): ");
             int mesFechamentoFatura = scanner.nextInt();
 
             int anoAtual = LocalDate.now().getYear();
-            LocalDate dataFechamento = LocalDate.of(anoAtual, mesFechamentoFatura, diaFechamentoFatura);
+            LocalDate dataFechamento = LocalDate.(diaFechamentoFatura);
+             */
 
-            novoCartao = new CartaoDeCredito(nomeCartao, limiteCartao, saldoDisponivel, dataFechamento);
+            novoCartao = new CartaoDeCredito(nomeCartao, limiteCartao, limiteDisponivel, dataFechamento);
         }
 
         else if (opcaoCartao == DEBITO) {
             novoCartao = new CartaoDeDebito(nomeCartao);
         }
 
-        usuario.adicionarCartao(novoCartao);
+        this.usuario.adicionarCartao(novoCartao);
+        ConexaoSQLite.adicionarCartaoBD(novoCartao);
     }
 
     public void listarCartao() {
@@ -105,7 +113,11 @@ public class CartaoService {
 
             if(opcaoCartao > 0 && opcaoCartao <= cartoesLen) {
                 // Conferir
+                String cartaoDeletarNome = usuario.getCartoes().get(opcaoCartao - 1).getNome();
+                ConexaoSQLite.removerCartaoBD(cartaoDeletarNome);
+
                 usuario.getCartoes().remove(opcaoCartao - 1);
+
                 break;
             }
             else if (opcaoCartao == 0) {
@@ -114,5 +126,15 @@ public class CartaoService {
                 System.out.println("Opcao Invalida");
             }
         }
+    }
+
+    public boolean isCartaoCadastrado(String nomeCartao) {
+        List<Cartao> cartoesCadastrados = this.usuario.getCartoes();
+        for(Cartao cartao : cartoesCadastrados) {
+            if(cartao.getNome().equals(nomeCartao)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

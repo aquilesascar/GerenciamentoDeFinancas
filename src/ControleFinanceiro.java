@@ -39,6 +39,13 @@ public class ControleFinanceiro {
             configInicialUsuario();
         }
 
+        List<Cartao> cartoesUsuario = ConexaoSQLite.carregarCartao();
+        if(cartoesUsuario != null) {
+            for(Cartao cartao : cartoesUsuario) {
+                usuario.adicionarCartao(cartao);
+            }
+        }
+
         System.out.println("Usuario: " + usuario.getNome());
         menuPrincipal = new MenuPrincipal(usuario);
         menuPrincipal.exibir();
