@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TransacaoService {
     private final int RECEITA = 1;
@@ -392,6 +393,53 @@ public class TransacaoService {
                 return;
             }
         }
+    }
+
+    public void cancelarTransacaoRecorrente() {
+        Scanner scanner = new Scanner(System.in);
+        List<TransacaoRecorrente> transacaoRecorrentesUsuario = new ArrayList<>();
+        List<Transacao> transacoesUsuario = usuario.getTransacoes();
+
+        for(Transacao transacao : transacoesUsuario) {
+            if(transacao instanceof TransacaoRecorrente) {
+                transacaoRecorrentesUsuario.add((TransacaoRecorrente) transacao);
+            }
+        }
+
+        if(transacaoRecorrentesUsuario.isEmpty()) {
+            System.out.println("Usuario nao possui transacoes recorrentes");
+            return;
+        }
+
+        List<TransacaoRecorrente> transacoesFiltradas = new ArrayList<>(transacaoRecorrentesUsuario.stream()
+                .collect(Collectors.toMap(
+                        TransacaoRecorrente::getDescricao,
+                        t -> t,
+                        (t1, t2) -> t1.getData().isAfter(t2.getData()) ? t1 : t2
+                )).values());
+
+
+        System.out.println("Digite a transacao que deseja remover: ");
+        for(int i = 0; i < transacoesFiltradas.size(); i++) {
+            System.out.println("[" + (i+1) + "]" + transacoesFiltradas.get(i).getDescricao());
+        }
+        int opcaoTransacao = scanner.nextInt();
+
+        if(opcaoTransacao < 1 || opcaoTransacao > transacoesFiltradas.size()) {
+            System.out.println("Opcao Invalida");
+            return;
+        }
+
+        String descricaoTransacaoCancelar = transacoesFiltradas.get(opcaoTransacao - 1).getDescricao();
+
+        for(TransacaoRecorrente transacao: transacaoRecorrentesUsuario) {
+            if(transacao.getDescricao().equals(descricaoTransacaoCancelar)) {
+                transacao.setAtiva(false);
+            }
+        }
+
+        // Atualizar banco
+        ConexaoSQLite.cancelarRecorrencias(descricaoTransacaoCancelar);
     }
 
     /*

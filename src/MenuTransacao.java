@@ -19,7 +19,7 @@ public class MenuTransacao extends Menu {
             System.out.println("[3] Listar Transacoes do Mes Atual");
             System.out.println("[4] Listar Transacoes Futuras");
             System.out.println("[5] Visualizar Fatura do Cartao");
-            System.out.println("[6] Visualizar Transacoes Recorrentes");
+            System.out.println("[6] Cancelar Transacao Recorrente");
             System.out.println("[0] Sair");
 
             int opcaoTransacao = scanner.nextInt();
@@ -45,7 +45,7 @@ public class MenuTransacao extends Menu {
                     // transacaoService.verFaturaAtual();
                     break;
                 case 6:
-                    // transacaoService.gerarTransacoesRecorrentes();
+                    transacaoService.cancelarTransacaoRecorrente();
                 case 0:
                     // volta para o menu anterior (menuPrincipal)
                     return;

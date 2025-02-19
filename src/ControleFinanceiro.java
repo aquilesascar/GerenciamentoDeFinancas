@@ -1,7 +1,9 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 // Classe que controla a interação entre usuário e sistema
 public class ControleFinanceiro {
@@ -15,11 +17,6 @@ public class ControleFinanceiro {
     }
 
     public ControleFinanceiro() {
-        /*
-        RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
-        ERRO DE STACK OVERFLOW!
-         */
-        // relatorioService = new RelatorioService();
         categorias = new ArrayList<>();//Precisa deicidir quais categorias
         transacoesRecorrentes = new ArrayList<>();
     }
@@ -28,12 +25,6 @@ public class ControleFinanceiro {
         // Implementação do fluxo principal do sistema
         Scanner scanner = new Scanner(System.in);
 
-        // gerarDadosDeTeste();
-
-        /*
-        Tirar o comentario quando quiser usar o banco de dados
-         */
-        // Banco de dados tenta carregar o usuario
         usuario = ConexaoSQLite.carregarUsuario();
         categorias = (ArrayList<Categoria>) ConexaoSQLite.carregarCategorias();
 
@@ -58,26 +49,59 @@ public class ControleFinanceiro {
             }
 
             gerarTransacoesRecorrentes();
-
         }
 
-        List<Transacao> filtragemMesAno =  ConexaoSQLite.filtrarTransacoesPorMesAno(4, 2025);
-        for(Transacao transacao : filtragemMesAno) {
-            System.out.println(transacao.getDados());
-        }
+        atualizarTransacoesRecorrentes();
 
         System.out.println("Usuario: " + usuario.getNome());
         menuPrincipal = new MenuPrincipal(usuario);
         menuPrincipal.exibir();
     }
 
-    private void configInicialUsuario() {
-        /*
-        Funcao responsavel para configuracao inicial do usuario:
-        Nome, Saldo Inicial, Usuario recebe ou nao salario, salario, data de recebimento do salario.
-         */
+    private void atualizarTransacoesRecorrentes() {
 
-        // Adicionar validadores/verificadores posteriormente
+        LocalDate hoje = LocalDate.now();
+        TransacaoRecorrente novaTransacaoRecorrente;
+
+        List<TransacaoRecorrente> transacoesFiltradas = new ArrayList<>(transacoesRecorrentes.stream()
+                .collect(Collectors.toMap(
+                        TransacaoRecorrente::getDescricao,
+                        t -> t,
+                        (t1, t2) -> t1.getData().isAfter(t2.getData()) ? t1 : t2
+                )).values());
+
+        // Exibir resultado
+        System.out.println("Transações filtradas:");
+        transacoesFiltradas.forEach(System.out::println);
+
+
+
+        for(TransacaoRecorrente transacao : transacoesFiltradas) {
+            if(transacao.isAtiva()) {
+                // Verificar se ja se passaram 30 dias desde a ultima transacao recorrente
+                LocalDate dataRenovacao = transacao.getData().plusDays(30);
+
+                while(dataRenovacao.isBefore(hoje) || dataRenovacao.isEqual(hoje)) {
+                    // Adiciona a transacao recorrente
+                    String tipo = transacao.getTipo();
+                    String descricao = transacao.getDescricao();
+                    double valor = transacao.getValor();
+                    Categoria categoria = transacao.getCategoria();
+                    String metodoPagamento = transacao.getMetodoPagamento();
+
+
+                    novaTransacaoRecorrente = new TransacaoRecorrente(tipo, descricao, valor, dataRenovacao, categoria, metodoPagamento, true);
+
+                    usuario.adicionarTransacao(novaTransacaoRecorrente);
+                    ConexaoSQLite.adicionarTransacaoDB(novaTransacaoRecorrente);
+
+                    dataRenovacao = dataRenovacao.plusDays(30);
+                }
+            }
+        }
+    }
+
+    private void configInicialUsuario() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Nome do Usuario: ");
@@ -88,25 +112,6 @@ public class ControleFinanceiro {
         ConexaoSQLite.adicionarUsuarioDB(usuario);
     }
 
-    public void gerarDadosDeTeste() {
-        // Usuario de teste
-
-        //Categorias pre-definidas
-        categorias.add(new Categoria("Entretenimento"));
-        categorias.add(new Categoria("Alimentacao"));
-        categorias.add(new Categoria("Despesas"));
-        categorias.add(new Categoria("Educacao"));
-
-        Categoria entretenimento = categorias.get(0);
-        Categoria alimentacao = categorias.get(1);
-        Categoria despesa = categorias.get(2);
-        Categoria educacao = categorias.get(3);
-
-        LocalDate dataAgr = LocalDate.now();
-        LocalDate dataChurrasco = LocalDate.of(2025, 2, 12);
-        LocalDate dataEducacaoBonus = LocalDate.of(2025, 1, 27);
-
-    }
     public void gerarTransacoesRecorrentes() {
         List<Transacao> todasTransacoes = this.usuario.getTransacoes();
 

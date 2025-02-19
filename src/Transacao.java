@@ -31,6 +31,10 @@ public class Transacao {
         return categoria;
     }
 
+    public String getMetodoPagamento() {
+        return metodoPagamento;
+    }
+
     public Transacao(String tipo, String descricao, double valor, LocalDate data, Categoria categoria, String metodoPagamento) {
         this.tipo = tipo;
         this.descricao = descricao;

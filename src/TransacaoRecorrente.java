@@ -20,6 +20,10 @@ public class TransacaoRecorrente extends Transacao {
         this.proximaData = this.proximaData.plusMonths(1); // Avança para o próximo mês
     }
 
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
+    }
+
     public List<String> getDados() {
         ArrayList<String> dadosTransacao = new ArrayList<>();
         dadosTransacao.add(super.tipo);
@@ -32,6 +36,10 @@ public class TransacaoRecorrente extends Transacao {
         dadosTransacao.add(String.valueOf(this.ativa ? 1 : 0));
         dadosTransacao.add(metodoPagamento);
         return dadosTransacao;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
     }
 }
 

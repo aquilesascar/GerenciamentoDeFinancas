@@ -249,6 +249,19 @@ public class ConexaoSQLite {
         return null;
     }
 
+    public static void cancelarRecorrencias(String descricao) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            String sql = "UPDATE TRANSACAO SET recorrente = ? WHERE descricao = ?";
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setInt(1, 0);
+                stmt.setString(2, descricao);
+                stmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+    }
+
     public static List<Cartao> carregarCartao() {
         List<Cartao> cartoes = new ArrayList<>();
         Cartao novoCartao = null;
