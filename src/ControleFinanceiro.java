@@ -77,17 +77,13 @@ public class ControleFinanceiro {
         System.out.print("Nome do Usuario: ");
         String nomeUsuario = scanner.nextLine();
 
-        System.out.print("Saldo Inicial: ");
-        double saldoInicial = scanner.nextDouble();
-
-        usuario = new Usuario(nomeUsuario, saldoInicial);
+        usuario = new Usuario(nomeUsuario);
 
         ConexaoSQLite.adicionarUsuarioDB(usuario);
     }
 
     public void gerarDadosDeTeste() {
         // Usuario de teste
-        usuario = new Usuario("Seu Jose", 5000);
 
         //Categorias pre-definidas
         categorias.add(new Categoria("Entretenimento"));

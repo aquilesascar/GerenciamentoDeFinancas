@@ -8,12 +8,11 @@ public class ConexaoSQLite {
 
     public static void adicionarUsuarioDB(Usuario usuario) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
-            String sql = "INSERT INTO USUARIO (nome, saldo) VALUES (?, ?)";
+            String sql = "INSERT INTO USUARIO (nome) VALUES (?)";
             System.out.println(sql);
 
             try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
                 stmt.setString(1, usuario.getNome());
-                stmt.setDouble(2, usuario.getSaldo());
                 stmt.executeUpdate();
                 System.out.println("✅ Usuário cadastrado com sucesso!");
             }
@@ -227,8 +226,7 @@ public class ConexaoSQLite {
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String nome = rs.getString("NOME");
-                    double saldo = rs.getDouble("SALDO");
-                    return new Usuario(nome, saldo);
+                    return new Usuario(nome);
                 }
             }
         } catch (Exception e) {
@@ -306,7 +304,7 @@ public class ConexaoSQLite {
                     int recorrente = rs.getInt("RECORRENTE");
                     String metodoPagamento = rs.getString("METODO_PAGAMENTO");
 
-                    
+
 
                     if(recorrente == 1) {
                         novaTransacao = new TransacaoRecorrente(tipo, descricao, valor, data, new Categoria(categoriaNome), metodoPagamento, true);
