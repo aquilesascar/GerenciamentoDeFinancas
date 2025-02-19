@@ -116,38 +116,44 @@ public class ConexaoSQLite {
             System.out.println("❌ Erro ao atualizar saldo: " + e.getMessage());
         }
     }
-        /*
+
         public static List<Transacao> filtrarTransacoesPorCategoria(String nomeCategoria) {
-            List<Transacao> transacoes = new ArrayList<>();
-    
+            List<Transacao> transacoesFiltradas = new ArrayList<>();
+            Transacao novaTransacao;
+
             try (Connection conexao = DriverManager.getConnection(URL)) {
-                String sql = "SELECT t.descricao, t.valor, t.data, t.tipo " +
-                        "FROM TRANSACAO t " +
-                        "JOIN CATEGORIA c ON t.categoria_id = c.id " +
-                        "WHERE c.nome = ?";
+                String sql = "SELECT * FROM TRANSACAO WHERE CATEGORIA_NOME = ?";
     
                 try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
                     stmt.setString(1, nomeCategoria);
                     ResultSet rs = stmt.executeQuery();
     
                     while (rs.next()) {
-                        String descricao = rs.getString("descricao");
-                        double valor = rs.getDouble("valor");
-                        LocalDate data = rs.getDate("data").toLocalDate();
-                        String tipo = rs.getString("tipo");
-    
-                        // Supondo que você tenha uma classe Transacao com um construtor adequado
-                        Transacao transacao = new Transacao(tipo, descricao, valor, data, new Categoria(nomeCategoria));
-                        transacoes.add(transacao);
+                        String tipo = rs.getString("TIPO");
+                        String descricao = rs.getString("DESCRICAO");
+                        double valor = rs.getDouble("VALOR");
+                        LocalDate dataTransacao = LocalDate.parse(rs.getString("DATA"));
+                        Categoria categoria = new Categoria(rs.getString("CATEGORIA_NOME"));
+                        boolean recorrente = rs.getInt("RECORRENTE") == 1;
+                        String metodoPagamento = rs.getString("METODO_PAGAMENTO");
+
+                        if(recorrente) {
+                            novaTransacao = new TransacaoRecorrente(tipo, descricao, valor, dataTransacao, categoria, metodoPagamento,recorrente);
+                        }
+                        else {
+                            novaTransacao = new Transacao(tipo, descricao, valor, dataTransacao, categoria, metodoPagamento);
+                        }
+
+                        transacoesFiltradas.add(novaTransacao);
                     }
+                    return transacoesFiltradas;
                 }
             } catch (Exception e) {
                 System.out.println("❌ Erro ao filtrar transações por categoria: " + e.getMessage());
             }
     
-            return transacoes;
+            return transacoesFiltradas;
         }
-         */
 
     /*
     public static List<Transacao> filtrarTransacoesPorTipo(String tipo) {

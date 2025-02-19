@@ -56,8 +56,9 @@ public class ControleFinanceiro {
 
         }
 
-        for(TransacaoRecorrente t : transacoesRecorrentes) {
-            System.out.println(t.getDescricao());
+        List<Transacao> filtrarCategoriaHuegos =  ConexaoSQLite.filtrarTransacoesPorCategoria("Jogos");
+        for(Transacao transacao : filtrarCategoriaHuegos) {
+            System.out.println(transacao.getDados());
         }
 
         System.out.println("Usuario: " + usuario.getNome());
