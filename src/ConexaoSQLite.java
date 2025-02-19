@@ -46,10 +46,9 @@ public class ConexaoSQLite {
     public static void adicionarCartaoBD(Cartao cartao) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
 
-            String sql = "INSERT INTO CARTAO (nome, tipo, data_fechamento, limite, limite_disponivel) VALUES (?, ?, ?, ?, ?)";;
+            String sql = "INSERT INTO CARTAO (nome, tipo, data_fechamento) VALUES (?, ?, ?)";
             ArrayList<String> dadosCartao = cartao.gerarDadosDB();
             System.out.println(dadosCartao.toString());
-            System.out.println(dadosCartao.get(4));
 
             boolean isCredito = cartao instanceof CartaoDeCredito;
 
@@ -59,8 +58,6 @@ public class ConexaoSQLite {
 
                 if(isCredito) {
                     stmt.setInt(3, Integer.parseInt(dadosCartao.get(2)));
-                    stmt.setDouble(4, Double.parseDouble(dadosCartao.get(3)));
-                    stmt.setDouble(5, Double.parseDouble(dadosCartao.get(4)));
                 }
 
                 stmt.executeUpdate();
@@ -72,36 +69,39 @@ public class ConexaoSQLite {
         }
     }
 
-    /*
+
     public static void adicionarTransacaoDB(Transacao transacao) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
-            String sql = "INSERT INTO TRANSACAO (tipo, descricao, valor, data, categoria_nome, recorrente, parcela, metodo_pagamento)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";;
-            ArrayList<String> dadosCartao = cartao.gerarDadosDB();
-            System.out.println(dadosCartao.toString());
-            System.out.println(dadosCartao.get(4));
-
-            boolean isCredito = cartao instanceof CartaoDeCredito;
+            String sql = "INSERT INTO TRANSACAO (tipo, descricao, valor, data, categoria_nome, recorrente, metodo_pagamento) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            List<String> dadosTransacao = transacao.getDados();
 
             try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-                stmt.setString(1, dadosCartao.get(0));
-                stmt.setString(2, dadosCartao.get(1));
 
-                if(isCredito) {
-                    stmt.setInt(3, Integer.parseInt(dadosCartao.get(2)));
-                    stmt.setDouble(4, Double.parseDouble(dadosCartao.get(3)));
-                    stmt.setDouble(5, Double.parseDouble(dadosCartao.get(4)));
-                }
+                // Tipo
+                stmt.setString(1, dadosTransacao.get(0));
+                // Descricao
+                stmt.setString(2, dadosTransacao.get(1));
+                // Valor
+                stmt.setDouble(3, Double.parseDouble(dadosTransacao.get(2)));
+                // Data
+                stmt.setString(4, dadosTransacao.get(3));
+                // Categoria_nome
+                stmt.setString(5, dadosTransacao.get(4));
+                // Recorrente
+                stmt.setInt(6, Integer.parseInt(dadosTransacao.get(5)));
+                // metodo_pagamento
+                stmt.setString(7, dadosTransacao.get(6));
+
 
                 stmt.executeUpdate();
-                System.out.println("✅ Cartao de " + dadosCartao.get(1) + "adicionado com sucesso!");
+                System.out.println("✅ Transacao adicionada com sucesso!");
             }
         } catch (Exception e) {
             System.out.println("❌ Erro ao adicionar cartao: " + e.getMessage());
             e.printStackTrace();
         }
     }
-     */
+
 
     public static void atualizarSaldoNoBanco(String nomeUsuario, double novoSaldo) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
@@ -252,10 +252,8 @@ public class ConexaoSQLite {
 
                     if(tipo.equals("CREDITO")) {
                         int dataFechamento = rs.getInt("DATA_FECHAMENTO");
-                        double limite = rs.getDouble("LIMITE");
-                        double limiteDisponivel = rs.getDouble("LIMITE_DISPONIVEL");
 
-                        novoCartao = new CartaoDeCredito(nome, limite, limiteDisponivel, dataFechamento);
+                        novoCartao = new CartaoDeCredito(nome, dataFechamento);
                     } else {
                         novoCartao = new CartaoDeDebito(nome);
                     }

@@ -105,7 +105,7 @@ public class TransacaoService {
         System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
         System.out.println("[1] Receita\n[2] Despesa");
         int opcaoTransacao = scanner.nextInt(); // Alterado para int
-        // scanner.nextLine();
+        scanner.nextLine();
 
         // Verfica se a opcao e valida
         if(opcaoTransacao < RECEITA || opcaoTransacao > DESPESA) {
@@ -132,7 +132,35 @@ public class TransacaoService {
         if(opcaoTransacao == DESPESA) {
             realizarTransacaoDespesa(valorTransacao, descricaoTransacao,categoriaCompra, dataTransacao);
         }
+        else {
+            realizarTransacaoReceita(valorTransacao, descricaoTransacao, categoriaCompra, dataTransacao);
+        }
 
+    }
+
+    public void realizarTransacaoReceita(double valorTransacao, String descricaoTransacao,Categoria categoriaCompra, LocalDate dataTransacao) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Essa transacao e recorrente? ");
+        System.out.println("[1] SIM");
+        System.out.println("[2] NAO");
+
+        Transacao novaTransacao;
+
+        int opcaoReceita = scanner.nextInt();
+        switch (opcaoReceita) {
+            case 1:
+                novaTransacao = new TransacaoRecorrente("RECEITA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, "", true);
+                break;
+            case 2:
+                novaTransacao = new Transacao("RECEITA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, "");
+                break;
+            default:
+                System.out.println("Opcao invalida.");
+                return;
+        }
+
+        ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
+        transacoes.add(novaTransacao);
     }
 
     public void realizarTransacaoDespesa(double valorTransacao, String descricaoTransacao,Categoria categoriaCompra, LocalDate dataTransacao) {
@@ -173,7 +201,32 @@ public class TransacaoService {
         if(metodoPagamento.equals("CREDITO")) {
             realizarTransacaoCredito(valorTransacao, descricaoTransacao, categoriaCompra, dataTransacao);
         }
+        else {
+            realizarTransacaoInstantanea(metodoPagamento, valorTransacao, descricaoTransacao, categoriaCompra, dataTransacao);
+        }
 
+    }
+
+    public void realizarTransacaoInstantanea(String metodopagamento, double valorTransacao, String descricaoTransacao ,Categoria categoriaCompra, LocalDate dataTransacao) {
+        Scanner scanner = new Scanner(System.in);
+        Transacao novaTransacao;
+        System.out.println("Essa transacao e recorrente? ");
+        System.out.println("[1] SIM");
+        System.out.println("[2] NAO");
+        int opcaoRecorrente = scanner.nextInt();
+        switch (opcaoRecorrente) {
+            case 1:
+                novaTransacao = new TransacaoRecorrente("DESPESA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, metodopagamento, true);
+                break;
+            case 2:
+                novaTransacao = new Transacao("DESPESA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, metodopagamento);
+                break;
+            default:
+                System.out.println("Opcao invalida.");
+                return;
+        }
+        // Adicionar ao banco
+        ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
 
     }
 
@@ -207,15 +260,13 @@ public class TransacaoService {
 
         CartaoDeCredito cartaoUsuario = (CartaoDeCredito) cartoesCreditoUsuario.get(opcaoCartao - 1);
 
-        if(cartaoUsuario.getLimiteDisponivel() < valorTransacao) {
-            System.out.println("Esse cartao nao possui limite disponivel");
-            return;
-        }
-
         System.out.println("Forma de Pagamento: ");
         System.out.println("[1] A vista");
         System.out.println("[2] Parcelado");
         int opcaoCompraCredito = scanner.nextInt();
+
+        final int A_VISTA = 1;
+        final int PARCELADO = 2;
 
         Transacao novaTransacao = null;
 
@@ -224,7 +275,7 @@ public class TransacaoService {
             return;
         }
 
-        if(opcaoCompraCredito == 2) {
+        if(opcaoCompraCredito == PARCELADO) {
             System.out.println("Digite o numero de parcelas: ");
             int parcelas = scanner.nextInt();
 
@@ -236,20 +287,48 @@ public class TransacaoService {
             double valorParcelas = valorTransacao / parcelas;
 
             novaTransacao = new Transacao("DESPESA", descricaoTransacao, valorParcelas,dataTransacao, categoriaCompra, "CREDITO");
-            // ConexaoSQLite.adicionarTransacao(novaTransacao);
+
+            ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
+            transacoes.add(novaTransacao);
+
             System.out.println("Compra adicionada com sucesso!");
             System.out.println("1 parcela: " + novaTransacao.getValor() + " - "+ novaTransacao.getData());
 
             for(int i = 1; i < parcelas; i++) {
                 LocalDate dataProximaParcela = novaTransacao.getData().plusMonths(1);
                 novaTransacao = new Transacao("DESPESA", descricaoTransacao, valorParcelas, dataProximaParcela, categoriaCompra, "CREDITO");
-                // ConexaoSQLite.adicionarTransacao(novaTransacao);
+
+                // Adicionar ao banco
+                ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
+                transacoes.add(novaTransacao);
+
+
                 System.out.println("Compra adicionada com sucesso!");
                 System.out.println((i+1) + " parcela: " + novaTransacao.getData());
             }
+            return;
+        }
+
+        else {
+            System.out.println("E uma transacao recorrente? ");
+            System.out.println("[1] SIM");
+            System.out.println("[2] NAO");
+            int opcaoRecorrente = scanner.nextInt();
+            switch (opcaoRecorrente) {
+                case 1:
+                    novaTransacao = new TransacaoRecorrente("DESPESA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, "CREDITO", true);
+                    break;
+                case 2:
+                    novaTransacao = new Transacao("DESPESA", descricaoTransacao, valorTransacao, dataTransacao, categoriaCompra, "CREDITO");
+                    break;
+                default:
+                    System.out.println("Opcao invalida.");
+                    return;
+            }
+            ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
+            transacoes.add(novaTransacao);
         }
     }
-
 
     public void realizarTransacao() {
         Scanner scanner = new Scanner(System.in);
@@ -398,6 +477,8 @@ public class TransacaoService {
         }
     }
 
+    /*
+    // EDITAR
     public void verFaturaAtual() {
         if (usuario.getCartoes().isEmpty()) {
             System.out.println("Nenhum cartão cadastrado.");
@@ -422,4 +503,5 @@ public class TransacaoService {
             System.out.println("Opção inválida.");
         }
     }
+     */
 }

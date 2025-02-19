@@ -6,9 +6,8 @@ import java.util.Scanner;
 // Classe que controla a interação entre usuário e sistema
 public class ControleFinanceiro {
     protected Usuario usuario;
-    // Retirar o array de categorias depois, pois ja se encontra em categoriaService
     protected ArrayList<Categoria> categorias;
-    private RelatorioService relatorioService;
+    private List<TransacaoRecorrente> transacoesRecorrentes;
     private MenuPrincipal menuPrincipal;
 
     public ControleFinanceiro() {
@@ -45,6 +44,8 @@ public class ControleFinanceiro {
                 usuario.adicionarCartao(cartao);
             }
         }
+
+        // transacoesRecorrentes = ConexaoSQLite.carregarTransacoesRecorrentes();
 
         System.out.println("Usuario: " + usuario.getNome());
         menuPrincipal = new MenuPrincipal(usuario);

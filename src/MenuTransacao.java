@@ -42,7 +42,7 @@ public class MenuTransacao extends Menu {
                     break;
                 case 5:
                     // Ve a fatura do cartao do usuario (Talvez deixar essa opcao em cartoes)
-                    transacaoService.verFaturaAtual();
+                    // transacaoService.verFaturaAtual();
                     break;
                 case 6:
                     // transacaoService.gerarTransacoesRecorrentes();
