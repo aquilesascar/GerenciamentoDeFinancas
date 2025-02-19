@@ -287,6 +287,43 @@ public class ConexaoSQLite {
         return null;
     }
 
+    public static List<Transacao> carregarTransacoes() {
+        List<Transacao> transacoes = new ArrayList<>();
+        Transacao novaTransacao = null;
+
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+
+            String sql = "SELECT * FROM TRANSACAO";
+
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()) {
+                    String tipo = rs.getString("TIPO");
+                    String descricao = rs.getString("DESCRICAO");
+                    double valor = rs.getDouble("VALOR");
+                    LocalDate data = LocalDate.parse(rs.getString("DATA"));
+                    String categoriaNome = rs.getString("CATEGORIA_NOME");
+                    int recorrente = rs.getInt("RECORRENTE");
+                    String metodoPagamento = rs.getString("METODO_PAGAMENTO");
+
+                    
+
+                    if(recorrente == 1) {
+                        novaTransacao = new TransacaoRecorrente(tipo, descricao, valor, data, new Categoria(categoriaNome), metodoPagamento, true);
+                    } else {
+                        novaTransacao = new Transacao(tipo, descricao, valor, data, new Categoria(categoriaNome), metodoPagamento);
+
+                    }
+                    transacoes.add(novaTransacao);
+                }
+                return transacoes;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+        return null;
+    }
+
     public static void removerCategoriaBD(String nomeCategoria) {
         try (Connection conexao = DriverManager.getConnection(URL)) {
          // Categoria encontrada, prossegue com a exclusão
@@ -326,4 +363,35 @@ public class ConexaoSQLite {
             e.printStackTrace();
         }
     }
+
+    public static void removerTransacaoDB(Transacao transacao) {
+        try (Connection conexao = DriverManager.getConnection(URL)) {
+            // Categoria encontrada, prossegue com a exclusão
+            String sqlDeletar = "DELETE FROM TRANSACAO WHERE DESCRICAO = ? AND DATA = ?";
+
+            String descricao = transacao.getDescricao();
+            String data = transacao.getData().toString();
+
+            System.out.println("Descrição: " + descricao);
+            System.out.println("Data: " + data);
+
+            try (PreparedStatement stmtDeletar = conexao.prepareStatement(sqlDeletar)) {
+                stmtDeletar.setString(1, descricao);
+                stmtDeletar.setString(2, data);
+
+                // Executa a query e verifica quantas linhas foram afetadas
+                int linhasAfetadas = stmtDeletar.executeUpdate();
+
+                if (linhasAfetadas > 0) {
+                    System.out.println("✅ Transação '" + descricao + "' deletada com sucesso!");
+                } else {
+                    System.out.println("❌ Nenhuma transação foi deletada.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Nao foi possivel deletar o cartao: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }
