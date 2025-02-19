@@ -118,7 +118,7 @@ public class ConexaoSQLite {
     }
 
         public static List<Transacao> filtrarTransacoesPorCategoria(String nomeCategoria) {
-            List<Transacao> transacoesFiltradas = new ArrayList<>();
+            List<Transacao> transacoesFiltradasCategoria = new ArrayList<>();
             Transacao novaTransacao;
 
             try (Connection conexao = DriverManager.getConnection(URL)) {
@@ -144,85 +144,93 @@ public class ConexaoSQLite {
                             novaTransacao = new Transacao(tipo, descricao, valor, dataTransacao, categoria, metodoPagamento);
                         }
 
-                        transacoesFiltradas.add(novaTransacao);
+                        transacoesFiltradasCategoria.add(novaTransacao);
                     }
-                    return transacoesFiltradas;
+                    return transacoesFiltradasCategoria;
                 }
             } catch (Exception e) {
                 System.out.println("❌ Erro ao filtrar transações por categoria: " + e.getMessage());
             }
     
-            return transacoesFiltradas;
+            return transacoesFiltradasCategoria;
         }
 
-    /*
+
     public static List<Transacao> filtrarTransacoesPorTipo(String tipo) {
-        List<Transacao> transacoes = new ArrayList<>();
+        List<Transacao> transacoesFiltradasTipo = new ArrayList<>();
+        Transacao novaTransacao;
 
         try (Connection conexao = DriverManager.getConnection(URL)) {
-            String sql = "SELECT t.descricao, t.valor, t.data, c.nome AS categoria " +
-                    "FROM TRANSACAO t " +
-                    "JOIN CATEGORIA c ON t.categoria_id = c.id " +
-                    "WHERE t.tipo = ?";
+            String sql = "SELECT * FROM TRANSACAO WHERE TIPO = ?";
 
             try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
                 stmt.setString(1, tipo);
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    String descricao = rs.getString("descricao");
-                    double valor = rs.getDouble("valor");
-                    LocalDate data = rs.getDate("data").toLocalDate();
-                    String categoriaNome = rs.getString("categoria");
+                    String tipoCategoria = rs.getString("TIPO");
+                    String descricao = rs.getString("DESCRICAO");
+                    double valor = rs.getDouble("VALOR");
+                    LocalDate dataTransacao = LocalDate.parse(rs.getString("DATA"));
+                    Categoria categoria = new Categoria(rs.getString("CATEGORIA_NOME"));
+                    boolean recorrente = rs.getInt("RECORRENTE") == 1;
+                    String metodoPagamento = rs.getString("METODO_PAGAMENTO");
 
-                    Transacao transacao = new Transacao(tipo, descricao, valor, data, new Categoria(categoriaNome));
-                    transacoes.add(transacao);
+                    if(recorrente) {
+                        novaTransacao = new TransacaoRecorrente(tipoCategoria, descricao, valor, dataTransacao, categoria, metodoPagamento,recorrente);
+                    }
+                    else {
+                        novaTransacao = new Transacao(tipoCategoria, descricao, valor, dataTransacao, categoria, metodoPagamento);
+                    }
+
+                    transacoesFiltradasTipo.add(novaTransacao);
                 }
+                return transacoesFiltradasTipo;
             }
         } catch (Exception e) {
-            System.out.println("❌ Erro ao filtrar transações por tipo: " + e.getMessage());
+            System.out.println("❌ Erro ao filtrar transações por categoria: " + e.getMessage());
         }
 
-        return transacoes;
+        return transacoesFiltradasTipo;
     }
-     */
 
-    /*
     public static List<Transacao> filtrarTransacoesPorMesAno(int mes, int ano) {
-        List<Transacao> transacoes = new ArrayList<>();
+        List<Transacao> transacoesFiltradasMesAno = new ArrayList<>();
+        Transacao novaTransacao;
 
         try (Connection conexao = DriverManager.getConnection(URL)) {
-            String sql = "SELECT t.descricao, t.valor, t.data, t.tipo, c.nome AS categoria " +
-                    "FROM TRANSACAO t " +
-                    "JOIN CATEGORIA c ON t.categoria_id = c.id " +
-                    "WHERE strftime('%m', t.data) = ? AND strftime('%Y', t.data) = ?";
+            String sql = "SELECT * FROM TRANSACAO WHERE SUBSTR(DATA, 1, 4) = ? AND SUBSTR(DATA, 6, 2) = ?";
 
             try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
-                // Formata o mês para sempre ter dois dígitos (ex: 01, 02, ..., 12)
-                String mesFormatado = String.format("%02d", mes);
-                stmt.setString(1, mesFormatado);
-                stmt.setString(2, String.valueOf(ano));
+                stmt.setString(1, String.valueOf(ano)); // Ano (YYYY)
+                stmt.setString(2, String.format("%02d", mes)); // Mês (MM)
 
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    String descricao = rs.getString("descricao");
-                    double valor = rs.getDouble("valor");
-                    LocalDate data = rs.getDate("data").toLocalDate();
-                    String tipo = rs.getString("tipo");
-                    String categoriaNome = rs.getString("categoria");
+                    String tipoCategoria = rs.getString("TIPO");
+                    String descricao = rs.getString("DESCRICAO");
+                    double valor = rs.getDouble("VALOR");
+                    LocalDate dataTransacao = LocalDate.parse(rs.getString("DATA"));
+                    Categoria categoria = new Categoria(rs.getString("CATEGORIA_NOME"));
+                    boolean recorrente = rs.getInt("RECORRENTE") == 1;
+                    String metodoPagamento = rs.getString("METODO_PAGAMENTO");
 
-                    Transacao transacao = new Transacao(tipo, descricao, valor, data, new Categoria(categoriaNome));
-                    transacoes.add(transacao);
+                    if (recorrente) {
+                        novaTransacao = new TransacaoRecorrente(tipoCategoria, descricao, valor, dataTransacao, categoria, metodoPagamento, recorrente);
+                    } else {
+                        novaTransacao = new Transacao(tipoCategoria, descricao, valor, dataTransacao, categoria, metodoPagamento);
+                    }
+
+                    transacoesFiltradasMesAno.add(novaTransacao);
                 }
             }
         } catch (Exception e) {
             System.out.println("❌ Erro ao filtrar transações por mês e ano: " + e.getMessage());
         }
 
-        return transacoes;
+        return transacoesFiltradasMesAno;
     }
-     */
 
     public static Usuario carregarUsuario() {
         try (Connection conexao = DriverManager.getConnection(URL)) {

@@ -56,8 +56,8 @@ public class ControleFinanceiro {
 
         }
 
-        List<Transacao> filtrarCategoriaHuegos =  ConexaoSQLite.filtrarTransacoesPorCategoria("Jogos");
-        for(Transacao transacao : filtrarCategoriaHuegos) {
+        List<Transacao> filtragemMesAno =  ConexaoSQLite.filtrarTransacoesPorMesAno(4, 2025);
+        for(Transacao transacao : filtragemMesAno) {
             System.out.println(transacao.getDados());
         }
 
