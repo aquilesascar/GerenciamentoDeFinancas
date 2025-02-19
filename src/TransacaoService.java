@@ -10,8 +10,6 @@ public class TransacaoService {
     private List<Transacao> transacoes;
     CategoriaService categoriaService;
 
-
-
     public TransacaoService(Usuario usuario) {
         this.usuario = usuario;
         transacoes = new ArrayList<Transacao>();
@@ -96,7 +94,7 @@ public class TransacaoService {
 
      */
 
-    public void rTransacao() {
+    public void realizarTransacao() {
         Scanner scanner = new Scanner(System.in);
 
         // Validador de categorias
@@ -330,89 +328,6 @@ public class TransacaoService {
         }
     }
 
-    public void realizarTransacao() {
-        Scanner scanner = new Scanner(System.in);
-
-        rTransacao();
-        System.out.println("SAIIIIIU");
-        System.out.println("SAIIIIIU");
-        System.out.println("SAIIIIIU");
-        System.out.println("SAIIIIIU");
-
-        /*
-        // Validador de categorias
-        Categoria categoriaCompra = validarCategoriaTransacao();
-
-        System.out.println("Qual o tipo da transacao? (Receita/Despesa)");
-        System.out.println("[1] Receita\n[2] Despesa");
-        int tipoTransacao = scanner.nextInt(); // Alterado para int
-        scanner.nextLine(); // Consumir a nova linha
-
-        System.out.println("Qual a descricao que gostaria de colocar para a transacao? ");
-        String descricaoTransacao = scanner.nextLine();
-
-        System.out.println("Preco da conta: ");
-        double valorTransacao = scanner.nextDouble();
-
-        System.out.println("Qual foi a data da transacao? ");
-        System.out.println("Dia: ");
-        int dia = scanner.nextInt();
-        System.out.println("Mês:");
-        int mes = scanner.nextInt();
-        System.out.println("Ano: ");
-        int ano = scanner.nextInt();
-        LocalDate dataTransacao = LocalDate.of(ano, mes, dia);
-
-        System.out.println("Qual a forma de Pagamento: ");
-        System.out.println("[1] ");
-
-        System.out.println("É uma transacao recorrente? ");
-        System.out.println("[1] Sim\n[2] Nao");
-        int opcaoTransacaoRecorrente = scanner.nextInt();
-
-        // Atualizar saldo do usuário
-        double saldoAtual = usuario.getSaldo();
-        if (tipoTransacao == 1) { // Receita
-            saldoAtual += valorTransacao;
-        } else if (tipoTransacao == 2) { // Despesa
-            saldoAtual -= valorTransacao;
-        }
-        this.usuario.setSaldo(saldoAtual);
-
-        // Atualizar saldo no banco de dados
-        ConexaoSQLite.atualizarSaldoNoBanco(this.usuario.getNome(), saldoAtual);
-
-        // Criar transação
-        if (opcaoTransacaoRecorrente == 1) {
-            // Transação recorrente
-            TransacaoRecorrente transacao = new TransacaoRecorrente(
-                    (tipoTransacao == 1) ? "receita" : "despesa",
-                    descricaoTransacao,
-                    valorTransacao,
-                    dataTransacao,
-                    categoriaCompra
-            );
-            usuario.adicionarTransacao(transacao);
-            System.out.println("✅ Transação recorrente adicionada com sucesso!");
-        } else {
-            // Transação única
-            TransacaoVariavel transacaoVariavel = new TransacaoVariavel(
-                    (tipoTransacao == 1) ? "receita" : "despesa",
-                    descricaoTransacao,
-                    valorTransacao,
-                    dataTransacao,
-                    categoriaCompra,
-                    1 // Parcelas (1 para transação única)
-            );
-            usuario.adicionarTransacao(transacaoVariavel);
-            System.out.println("✅ Transação única adicionada com sucesso!");
-        }
-
-        System.out.println("Saldo atualizado: " + usuario.getSaldo());
-
-         */
-    }
-
     private Categoria validarCategoriaTransacao() {
         Scanner scanner = new Scanner(System.in);
         List<Categoria> categorias = this.categoriaService.getCategorias();
@@ -470,6 +385,8 @@ public class TransacaoService {
                 System.out.println("Opcao Invalida");
             }
             else {
+                Transacao transacaoRemover = transacoesUsuario.get(opcaoTransacao - 1);
+                ConexaoSQLite.removerTransacaoDB(transacaoRemover);
                 transacoesUsuario.remove(opcaoTransacao - 1);
                 System.out.println("Transacao removida com sucesso!");
                 return;

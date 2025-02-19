@@ -17,6 +17,7 @@ public class ControleFinanceiro {
          */
         // relatorioService = new RelatorioService();
         categorias = new ArrayList<>();//Precisa deicidir quais categorias
+        transacoesRecorrentes = new ArrayList<>();
     }
 
     public void executar() {
@@ -45,7 +46,19 @@ public class ControleFinanceiro {
             }
         }
 
-        // transacoesRecorrentes = ConexaoSQLite.carregarTransacoesRecorrentes();
+        List<Transacao> transacoes = ConexaoSQLite.carregarTransacoes();
+        if(transacoes != null) {
+            for(Transacao transacao : transacoes) {
+                usuario.adicionarTransacao(transacao);
+            }
+
+            gerarTransacoesRecorrentes();
+
+        }
+
+        for(TransacaoRecorrente t : transacoesRecorrentes) {
+            System.out.println(t.getDescricao());
+        }
 
         System.out.println("Usuario: " + usuario.getNome());
         menuPrincipal = new MenuPrincipal(usuario);
@@ -92,5 +105,13 @@ public class ControleFinanceiro {
         LocalDate dataEducacaoBonus = LocalDate.of(2025, 1, 27);
 
     }
+    public void gerarTransacoesRecorrentes() {
+        List<Transacao> todasTransacoes = this.usuario.getTransacoes();
 
+        for(Transacao transacao : todasTransacoes) {
+            if(transacao instanceof TransacaoRecorrente) {
+                transacoesRecorrentes.add((TransacaoRecorrente) transacao);
+            }
+        }
+    }
 }
