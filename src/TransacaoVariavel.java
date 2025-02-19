@@ -5,6 +5,12 @@ public class TransacaoVariavel extends Transacao{
     private int quantParcelas;
     private double valorParcela;
 
+    public TransacaoVariavel(String tipo, String descricao, double valor, LocalDate data, Categoria categoria, String metodoPagamento, int quantParcelas, double valorParcela) {
+        super(tipo, descricao, valor, data, categoria, metodoPagamento);
+        this.quantParcelas = quantParcelas;
+        this.valorParcela = valorParcela;
+    }
+
     public double getValorParcela() {
         return valorParcela;
     }
@@ -13,6 +19,7 @@ public class TransacaoVariavel extends Transacao{
         return quantParcelas;
     }
 
+    /*
     public TransacaoVariavel(String tipo, String descricao, double valor, LocalDate data, Categoria categoria, int quantParcelas) {
         super(tipo, descricao, valor, data, categoria);
         this.quantParcelas = quantParcelas;
@@ -21,4 +28,6 @@ public class TransacaoVariavel extends Transacao{
     public double calcularValorParcelas(double precoProduto, int qtParcelas) {
         return precoProduto / qtParcelas;
     }
+
+     */
 }

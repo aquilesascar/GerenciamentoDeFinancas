@@ -51,27 +51,12 @@ public class CartaoService {
         }
 
         if(opcaoCartao == CREDITO) {
-            System.out.println("Limite do cartao: ");
-            double limiteCartao = scanner.nextDouble();
-
-            System.out.println("Limite disponivel: ");
-            double limiteDisponivel = scanner.nextDouble();
-
             System.out.println("Data de Fechamento da Fatura do Cartao");
             System.out.println("Dia: ");
             // Validar
             int dataFechamento = scanner.nextInt();
 
-            /*
-            //Validar
-            System.out.println("Mes de Fechamento do cartao (1...12): ");
-            int mesFechamentoFatura = scanner.nextInt();
-
-            int anoAtual = LocalDate.now().getYear();
-            LocalDate dataFechamento = LocalDate.(diaFechamentoFatura);
-             */
-
-            novoCartao = new CartaoDeCredito(nomeCartao, limiteCartao, limiteDisponivel, dataFechamento);
+            novoCartao = new CartaoDeCredito(nomeCartao, dataFechamento);
         }
 
         else if (opcaoCartao == DEBITO) {
