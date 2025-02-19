@@ -56,10 +56,10 @@ public class Transacao {
         }
         while (texto.length() < tamanho) {
             texto = texto + " ";
-        }
+    }
         return texto;
 
-        }
+}
 
 }
 

@@ -64,7 +64,7 @@ public class TelaRelatorio extends Application {
             PieChart.Data pedaço4 = new PieChart.Data("Gasolina",40);
             pieChart.getData().addAll(pedaço1,pedaço2,pedaço3,pedaço4);
 
-            Button botaoRelatorio = new Button(" Biaxar Relatorio");
+            Button botaoRelatorio = new Button(" Baixar Relatorio");
             botaoRelatorio.setOnAction(e -> {ArquivoRelatorio.downloadTransacoes(transacoes, totalEntrdas, totalDespesa);});
 
             Button botaoGraficoCategoria = new Button(" Baixar Graficos das categorias");
@@ -73,7 +73,7 @@ public class TelaRelatorio extends Application {
             VBox vbox = new VBox(50);
             vbox.getChildren().addAll(scrollPane, pieChart, botaoRelatorio,botaoGraficoCategoria);
 
-            Scene scene = new Scene(vbox, 600, 600);
+            Scene scene = new Scene(vbox, 700, 700);
 
             stage.setScene(scene);
 
