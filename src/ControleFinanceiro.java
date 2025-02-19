@@ -10,6 +10,10 @@ public class ControleFinanceiro {
     private List<TransacaoRecorrente> transacoesRecorrentes;
     private MenuPrincipal menuPrincipal;
 
+    public ArrayList<Categoria> getCategorias() {
+        return categorias;
+    }
+
     public ControleFinanceiro() {
         /*
         RELATORIO SERVICE FAZENDO INFINITAS CHAMADAS RECURSIVAS!
@@ -31,6 +35,7 @@ public class ControleFinanceiro {
          */
         // Banco de dados tenta carregar o usuario
         usuario = ConexaoSQLite.carregarUsuario();
+        categorias = (ArrayList<Categoria>) ConexaoSQLite.carregarCategorias();
 
         // Caso nao haja usuario existente e dado ao usuario a opcao de configurar um novo usuario
         if(usuario == null) {

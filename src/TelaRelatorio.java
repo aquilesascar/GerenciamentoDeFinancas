@@ -49,20 +49,14 @@ public class TelaRelatorio extends Application {
 
             PieChart pieChart = new PieChart();
             ArrayList<Transacao> transacoesCategoria = new ArrayList<>();
-           /* for (Categoria categoria : categorias) {
+            for (Categoria categoria : categorias) {
                 transacoesCategoria = (ArrayList<Transacao>) ConexaoSQLite.filtrarTransacoesPorCategoria(categoria.getNome());
                 PieChart.Data pedaço = new PieChart.Data(categoria.getNome(), transacoesCategoria.size());
                 pieChart.getData().add(pedaço);
             }
 
-            */
 
-            //Grafico apenas para fazar teste
-            PieChart.Data pedaço1 = new PieChart.Data("Lazer",30);
-            PieChart.Data pedaço2 = new PieChart.Data("Esporte",30);
-            PieChart.Data pedaço3 = new PieChart.Data("SuperMercado",50);
-            PieChart.Data pedaço4 = new PieChart.Data("Gasolina",40);
-            pieChart.getData().addAll(pedaço1,pedaço2,pedaço3,pedaço4);
+
 
             Button botaoRelatorio = new Button(" Baixar Relatorio");
             botaoRelatorio.setOnAction(e -> {ArquivoRelatorio.downloadTransacoes(transacoes, totalEntrdas, totalDespesa);});

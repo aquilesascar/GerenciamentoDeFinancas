@@ -6,16 +6,18 @@ import java.util.Scanner;
 
 // Classe responsável pela geração de relatórios
 public  class RelatorioService  {
-    public static void gerarRelatorioMesAno(ArrayList<Categoria> categorias){
+    public static void gerarRelatorioMesAno(){
         Scanner sc = new Scanner(System.in);
+        ArrayList <Categoria> categorias = (ArrayList<Categoria>) ConexaoSQLite.carregarCategorias();
         System.out.println("Digite o ano do relatorio");
         int ano= sc.nextInt();
         System.out.println("Digite o mês do relatorio");
         int mes= sc.nextInt();
-        ArrayList<Transacao> transacoes = ArrayParaTeste.arrayTransacoesTeste();
+        ArrayList<Transacao> transacoes = (ArrayList<Transacao>) ConexaoSQLite.filtrarTransacoesPorMesAno(mes,ano);
         ordenarTranscoes(transacoes);
         double valorTotalEntradas= calcularEntradas(transacoes);
         double valortotalSaidas =calcularGastos(transacoes);
+
 
             TelaRelatorio.exibir(transacoes, categorias,valorTotalEntradas,valortotalSaidas);
 

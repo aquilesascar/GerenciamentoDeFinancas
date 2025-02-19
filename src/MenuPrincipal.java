@@ -41,6 +41,7 @@ public class MenuPrincipal extends Menu{
                     // Gera o relatorio para o usuario
                     // Crirar um menu so para os relatorios
                     // menuRelatorio()
+                    RelatorioService.gerarRelatorioMesAno();
                     break;
                 case 4:
                     menuCategoria.exibir();
