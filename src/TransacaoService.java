@@ -225,6 +225,8 @@ public class TransacaoService {
                 return;
         }
         // Adicionar ao banco
+        transacoes.add(novaTransacao);
+        this.usuario.adicionarTransacao(novaTransacao);
         ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
 
     }
@@ -298,6 +300,7 @@ public class TransacaoService {
                 novaTransacao = new Transacao("DESPESA", descricaoTransacao, valorParcelas, dataProximaParcela, categoriaCompra, "CREDITO");
 
                 // Adicionar ao banco
+                this.usuario.adicionarTransacao(novaTransacao);
                 ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
                 transacoes.add(novaTransacao);
 
@@ -326,6 +329,7 @@ public class TransacaoService {
             }
             ConexaoSQLite.adicionarTransacaoDB(novaTransacao);
             transacoes.add(novaTransacao);
+            this.usuario.adicionarTransacao(novaTransacao);
         }
     }
 

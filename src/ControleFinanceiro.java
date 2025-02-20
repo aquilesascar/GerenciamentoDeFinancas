@@ -59,7 +59,6 @@ public class ControleFinanceiro {
     }
 
     private void atualizarTransacoesRecorrentes() {
-
         LocalDate hoje = LocalDate.now();
         TransacaoRecorrente novaTransacaoRecorrente;
 
@@ -69,12 +68,6 @@ public class ControleFinanceiro {
                         t -> t,
                         (t1, t2) -> t1.getData().isAfter(t2.getData()) ? t1 : t2
                 )).values());
-
-        // Exibir resultado
-        System.out.println("Transações filtradas:");
-        transacoesFiltradas.forEach(System.out::println);
-
-
 
         for(TransacaoRecorrente transacao : transacoesFiltradas) {
             if(transacao.isAtiva()) {
